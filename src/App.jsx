@@ -1,109 +1,48 @@
-import { useState } from "react";
-
-const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNDg1MjQ3MjY1NGRkYzhiN2I5ZDdjZjUwNGQxMTBkYyIsIm5iZiI6MTc3ODg1NTk5Mi4yODQsInN1YiI6IjZhMDczMDM4ZTBiMTk3ZGE4YTgyNmUwOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.mqKMNs74XFn43bTDhDz0LQn686YCkQyElPqzGSSN4rY";
-
-export default function App() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [selectedUrl, setSelectedUrl] = useState("");
-
-  async function searchContent() {
-    if (!query) return;
-
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      const filtered = data.results.filter(
-        (item) =>
-          item.media_type === "movie" ||
-          item.media_type === "tv"
-      );
-
-      setResults(filtered);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function openPlayer(item) {
-    let url = "";
-
-    if (item.media_type === "movie") {
-      url = `https://vidsrc.xyz/embed/movie?tmdb=${item.id}`;
-    }
-
-    if (item.media_type === "tv") {
-      url = `https://vidsrc.xyz/embed/tv?tmdb=${item.id}&season=1&episode=1`;
-    }
-
-    setSelectedUrl(url);
-  }
-
+function App() {
   return (
     <div className="app">
-      <h1>Movie & Anime Search</h1>
+      <header className="navbar">
+        <h1>StreamHub</h1>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search movies, TV, anime..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              searchContent();
-            }
-          }}
-        />
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">Movies</a>
+          <a href="#">TV</a>
+          <a href="#">Anime</a>
+        </nav>
+      </header>
 
-        <button onClick={searchContent}>
-          Search
-        </button>
-      </div>
+      <main>
+        <section className="hero">
+          <h2>Watch Movies, TV, and Anime</h2>
 
-      <div className="results">
-        {results.map((item) => {
-          const title = item.title || item.name;
+          <p>
+            Search and stream your favorite content instantly.
+          </p>
 
-          const poster = item.poster_path
-            ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-            : "https://via.placeholder.com/300x450";
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search for a movie or show..."
+            />
 
-          return (
-            <div
-              key={item.id}
-              className="card"
-              onClick={() => openPlayer(item)}
-            >
-              <img src={poster} alt={title} />
+            <button>Search</button>
+          </div>
+        </section>
 
-              <h3>{title}</h3>
+        <section className="content-row">
+          <h3>Trending</h3>
 
-              <p>{item.media_type}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      {selectedUrl && (
-        <div className="player-container">
-          <iframe
-            src={selectedUrl}
-            title="Video Player"
-            allowFullScreen
-          />
-        </div>
-      )}
+          <div className="card-container">
+            <div className="media-card">Movie 1</div>
+            <div className="media-card">Movie 2</div>
+            <div className="media-card">Movie 3</div>
+            <div className="media-card">Movie 4</div>
+          </div>
+        </section>
+      </main>
     </div>
-  );
+  )
 }
+
+export default App
