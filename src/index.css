@@ -1,15 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
+  background-color: #111;
+  color: white;
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  padding: 40px;
+}
+
+.app {
+  padding: 20px;
 }
 
 h1 {
-  color: steelblue;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 18px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: #1b1b1b;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+}
+
+.card h3 {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.card p {
+  padding: 0 10px 10px;
+  color: #999;
+}
+
+.player-container {
+  margin-top: 30px;
+}
+
+.player-container iframe {
+  width: 100%;
+  height: 700px;
+  border: none;
+  border-radius: 12px;
 }
