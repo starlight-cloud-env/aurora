@@ -4,6 +4,8 @@ function App() {
   const [search, setSearch] = useState('')
   const [results, setResults] = useState([])
   const [mediaType, setMediaType] = useState('movie')
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [modalData, setModalData] = useState(null)
 
   const searchMedia = async () => {
     if (!search) return
@@ -37,6 +39,60 @@ function App() {
   const goHome = () => {
     setResults([])
     setSearch('')
+  }
+
+  const openItem = async (item) => {
+    const token = import.meta.env.VITE_TMDB_API_KEY
+
+    setSelectedItem(item)
+    setModalData(null)
+
+    try {
+      // MOVIE FLOW
+      if (mediaType === 'movie') {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${item.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              accept: 'application/json',
+            },
+          }
+        )
+
+        const data = await res.json()
+
+        setModalData({
+          type: 'movie',
+          title: data.title,
+          overview: data.overview,
+          runtime: data.runtime,
+        })
+      }
+
+      // TV FLOW
+      if (mediaType === 'tv') {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/tv/${item.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              accept: 'application/json',
+            },
+          }
+        )
+
+        const data = await res.json()
+
+        setModalData({
+          type: 'tv',
+          name: data.name,
+          seasons: data.seasons,
+        })
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
@@ -120,6 +176,7 @@ function App() {
                 <div
                   className="media-card"
                   key={item.id}
+                  onClick={() => openItem(item)}
                 >
                   {posterUrl ? (
                     <img
@@ -128,9 +185,7 @@ function App() {
                       className="poster-image"
                     />
                   ) : (
-                    <div className="no-image">
-                      No Image
-                    </div>
+                    <div className="no-image">No Image</div>
                   )}
 
                   <div className="media-info">
@@ -150,6 +205,58 @@ function App() {
               )
             })}
           </div>
+
+          {/* MODAL MUST BE OUTSIDE GRID */}
+          {selectedItem && modalData && (
+            <div
+              className="modal-overlay"
+              onClick={() => setSelectedItem(null)}
+            >
+              <div
+                className="modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {modalData.type === 'movie' && (
+                  <div>
+                    <h2>{modalData.title}</h2>
+
+                    <p>
+                      Runtime: {modalData.runtime} minutes
+                    </p>
+
+                    <p style={{ marginTop: '10px' }}>
+                      {modalData.overview}
+                    </p>
+                  </div>
+                )}
+
+                {modalData.type === 'tv' && (
+                  <div>
+                    <h2>{modalData.name}</h2>
+
+                    <h3>Seasons</h3>
+
+                    <ul>
+                      {modalData.seasons
+                        .filter((s) => s.season_number > 0)
+                        .map((season) => (
+                          <li key={season.id}>
+                            {season.name} ({season.episode_count}{' '}
+                            episodes)
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setSelectedItem(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       </main>
     </div>
