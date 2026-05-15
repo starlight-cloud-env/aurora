@@ -1,8 +1,30 @@
+import { useState } from 'react'
+
 function App() {
+  const [search, setSearch] = useState('')
+  const [movies, setMovies] = useState([])
+
+  const searchMovies = async () => {
+    if (!search) return
+
+    const apiKey = import.meta.env.VITE_TMDB_API_KEY
+
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${search}`
+
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+
+      setMovies(data.results || [])
+    } catch (error) {
+      console.error('Error fetching movies:', error)
+    }
+  }
+
   return (
     <div className="app">
       <header className="navbar">
-        <h1>StreamHub</h1>
+        <h1>Aurora</h1>
 
         <nav>
           <a href="#">Home</a>
@@ -14,30 +36,39 @@ function App() {
 
       <main>
         <section className="hero">
-          <h2>Watch Movies, TV, and Anime</h2>
-
-          <p>
-            Search and stream your favorite content instantly.
-          </p>
+          <h2>Search Movies</h2>
 
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Search for a movie or show..."
+              placeholder="Search for movies..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
-            <button>Search</button>
+            <button onClick={searchMovies}>
+              Search
+            </button>
           </div>
         </section>
 
         <section className="content-row">
-          <h3>Trending</h3>
+          <h3>Results</h3>
 
           <div className="card-container">
-            <div className="media-card">Movie 1</div>
-            <div className="media-card">Movie 2</div>
-            <div className="media-card">Movie 3</div>
-            <div className="media-card">Movie 4</div>
+            {movies.map((movie) => (
+              <div className="media-card" key={movie.id}>
+                <div>
+                  <h4>{movie.title}</h4>
+
+                  <p>
+                    {movie.release_date
+                      ? movie.release_date.slice(0, 4)
+                      : 'Unknown'}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       </main>
