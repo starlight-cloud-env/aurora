@@ -6,26 +6,33 @@ function App() {
   const [mediaType, setMediaType] = useState('movie')
 
   const searchMedia = async () => {
-    if (!search) return
+  if (!search) return
 
-    const apiKey = import.meta.env.VITE_TMDB_API_KEY
+  const token = import.meta.env.VITE_TMDB_API_KEY
 
-    const endpoint =
-      mediaType === 'movie'
-        ? 'https://api.themoviedb.org/3/search/movie'
-        : 'https://api.themoviedb.org/3/search/tv'
+  const endpoint =
+    mediaType === 'movie'
+      ? 'https://api.themoviedb.org/3/search/movie'
+      : 'https://api.themoviedb.org/3/search/tv'
 
-    const url = `${endpoint}?api_key=${apiKey}&query=${search}`
+  const url = `${endpoint}?query=${encodeURIComponent(search)}`
 
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-      setResults(data.results || [])
-    } catch (error) {
-      console.error('Error fetching media:', error)
-    }
+    const data = await response.json()
+
+    setResults(data.results || [])
+  } catch (error) {
+    console.error('Error fetching media:', error)
   }
+}
 
   const goHome = () => {
     setResults([])
