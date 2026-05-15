@@ -6,6 +6,9 @@ function App() {
   const [mediaType, setMediaType] = useState('movie')
   const [selectedItem, setSelectedItem] = useState(null)
   const [modalData, setModalData] = useState(null)
+  const [selectedSeason, setSelectedSeason] = useState(null)
+  const [episodes, setEpisodes] = useState([])
+  const [selectedEpisode, setSelectedEpisode] = useState(null)
 
   const searchMedia = async () => {
     if (!search) return
@@ -93,6 +96,44 @@ function App() {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  const openSeason = async (showId, seasonNumber) => {
+    const token = import.meta.env.VITE_TMDB_API_KEY
+
+    setSelectedSeason(seasonNumber)
+    setEpisodes([])
+    setSelectedEpisode(null)
+
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNumber}`,
+        {
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const data = await res.json()
+
+      setEpisodes(data.episodes || [])
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const openEpisode = (episode) => {
+    setSelectedEpisode(episode)
+  }
+
+  const closeModal = () => {
+    setSelectedItem(null)
+    setModalData(null)
+    setSelectedSeason(null)
+    setEpisodes([])
+    setSelectedEpisode(null)
   }
 
   return (
@@ -234,24 +275,84 @@ function App() {
                   <div>
                     <h2>{modalData.name}</h2>
 
-                    <h3>Seasons</h3>
+                    {/* LEVEL 1: SEASONS */}
+                    {!selectedSeason && !selectedEpisode && (
+                      <div>
+                        <h3>Seasons</h3>
 
-                    <ul>
-                      {modalData.seasons
-                        .filter((s) => s.season_number > 0)
-                        .map((season) => (
-                          <li key={season.id}>
-                            {season.name} ({season.episode_count}{' '}
-                            episodes)
-                          </li>
-                        ))}
-                    </ul>
+                        <ul>
+                          {modalData.seasons
+                            .filter((s) => s.season_number > 0)
+                            .map((season) => (
+                              <li key={season.id}>
+                                <button
+                                  onClick={() =>
+                                    openSeason(
+                                      selectedItem.id,
+                                      season.season_number
+                                    )
+                                  }
+                                >
+                                  {season.name} ({season.episode_count} episodes)
+                                </button>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* LEVEL 2: EPISODES */}
+                    {selectedSeason && !selectedEpisode && (
+                      <div>
+                        <h3>
+                          Season {selectedSeason} Episodes
+                        </h3>
+
+                        <button
+                          onClick={() => {
+                            setSelectedSeason(null)
+                            setEpisodes([])
+                          }}
+                        >
+                          ← Back to Seasons
+                        </button>
+
+                        <ul>
+                          {episodes.map((ep) => (
+                            <li key={ep.id}>
+                              <button onClick={() => openEpisode(ep)}>
+                                Episode {ep.episode_number}: {ep.name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* LEVEL 3: EPISODE DETAIL */}
+                    {selectedEpisode && (
+                      <div>
+                        <button
+                          onClick={() => setSelectedEpisode(null)}
+                        >
+                          ← Back to Episodes
+                        </button>
+
+                        <h3>
+                          Episode {selectedEpisode.episode_number}:{' '}
+                          {selectedEpisode.name}
+                        </h3>
+
+                        <p style={{ marginTop: '10px' }}>
+                          {selectedEpisode.overview ||
+                            'No description available.'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                <button
-                  onClick={() => setSelectedItem(null)}
-                >
+                <button onClick={closeModal}>
                   Close
                 </button>
               </div>
