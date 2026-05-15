@@ -106,3 +106,21 @@ a {
 .media-card:hover {
   transform: scale(1.05);
 }
+
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-button:hover {
+  color: #e50914;
+}
+
+.nav-button.active {
+  color: #e50914;
+  font-weight: bold;
+}

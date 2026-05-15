@@ -2,23 +2,34 @@ import { useState } from 'react'
 
 function App() {
   const [search, setSearch] = useState('')
-  const [movies, setMovies] = useState([])
+  const [results, setResults] = useState([])
+  const [mediaType, setMediaType] = useState('movie')
 
-  const searchMovies = async () => {
+  const searchMedia = async () => {
     if (!search) return
 
     const apiKey = import.meta.env.VITE_TMDB_API_KEY
 
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${search}`
+    const endpoint =
+      mediaType === 'movie'
+        ? 'https://api.themoviedb.org/3/search/movie'
+        : 'https://api.themoviedb.org/3/search/tv'
+
+    const url = `${endpoint}?api_key=${apiKey}&query=${search}`
 
     try {
       const response = await fetch(url)
       const data = await response.json()
 
-      setMovies(data.results || [])
+      setResults(data.results || [])
     } catch (error) {
-      console.error('Error fetching movies:', error)
+      console.error('Error fetching media:', error)
     }
+  }
+
+  const goHome = () => {
+    setResults([])
+    setSearch('')
   }
 
   return (
@@ -27,26 +38,63 @@ function App() {
         <h1>Aurora</h1>
 
         <nav>
-          <a href="#">Home</a>
-          <a href="#">Movies</a>
-          <a href="#">TV</a>
-          <a href="#">Anime</a>
+          <button
+            className="nav-button"
+            onClick={goHome}
+          >
+            Home
+          </button>
+
+          <button
+            className={`nav-button ${
+              mediaType === 'movie' ? 'active' : ''
+            }`}
+            onClick={() => setMediaType('movie')}
+          >
+            Movies
+          </button>
+
+          <button
+            className={`nav-button ${
+              mediaType === 'tv' ? 'active' : ''
+            }`}
+            onClick={() => setMediaType('tv')}
+          >
+            Shows
+          </button>
         </nav>
       </header>
 
       <main>
         <section className="hero">
-          <h2>Search Movies</h2>
+          <h2>
+            Search {mediaType === 'movie' ? 'Movies' : 'Shows'}
+          </h2>
+
+          <p>
+            Find your favorite content instantly.
+          </p>
 
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Search for movies..."
+              placeholder={`Search ${
+                mediaType === 'movie'
+                  ? 'movies'
+                  : 'shows'
+              }...`}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  searchMedia()
+                }
+              }}
             />
 
-            <button onClick={searchMovies}>
+            <button onClick={searchMedia}>
               Search
             </button>
           </div>
@@ -56,15 +104,22 @@ function App() {
           <h3>Results</h3>
 
           <div className="card-container">
-            {movies.map((movie) => (
-              <div className="media-card" key={movie.id}>
+            {results.map((item) => (
+              <div
+                className="media-card"
+                key={item.id}
+              >
                 <div>
-                  <h4>{movie.title}</h4>
+                  <h4>
+                    {item.title || item.name}
+                  </h4>
 
                   <p>
-                    {movie.release_date
-                      ? movie.release_date.slice(0, 4)
-                      : 'Unknown'}
+                    {(
+                      item.release_date ||
+                      item.first_air_date ||
+                      ''
+                    ).slice(0, 4)}
                   </p>
                 </div>
               </div>
