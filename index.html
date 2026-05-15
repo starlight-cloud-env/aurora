@@ -1,10 +1,150 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My First Site</title>
-</head>
-<body>
-  <h1>Hello from GitHub Pages!</h1>
-  <p>My website is live.</p>
-</body>
-</html>
+export default function App() {
+  return (
+    <div className="min-h-screen bg-gray-100 text-gray-900">
+      {/* Navigation */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">My Website</h1>
+
+          <nav className="flex gap-6 text-sm font-medium">
+            <a href="#home" className="hover:text-blue-600 transition-colors">
+              Home
+            </a>
+            <a href="#about" className="hover:text-blue-600 transition-colors">
+              About
+            </a>
+            <a href="#projects" className="hover:text-blue-600 transition-colors">
+              Projects
+            </a>
+            <a href="#contact" className="hover:text-blue-600 transition-colors">
+              Contact
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section
+        id="home"
+        className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center"
+      >
+        <div>
+          <p className="text-blue-600 font-semibold mb-3">
+            Welcome to my site
+          </p>
+
+          <h2 className="text-5xl font-bold leading-tight mb-6">
+            Building modern web applications and tools.
+          </h2>
+
+          <p className="text-lg text-gray-600 mb-8">
+            A foundation for your GitHub Pages website using React and Tailwind.
+            You can expand this into a portfolio, dashboard, documentation
+            portal, or API-driven app.
+          </p>
+
+          <div className="flex gap-4">
+            <button className="px-6 py-3 rounded-2xl bg-black text-white hover:opacity-90 transition-opacity">
+              View Projects
+            </button>
+
+            <button className="px-6 py-3 rounded-2xl border bg-white hover:bg-gray-50 transition-colors">
+              Contact Me
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div className="bg-white rounded-3xl shadow-xl p-8 border">
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="bg-gray-100 rounded-2xl p-6">
+                <h3 className="font-semibold mb-2">Frontend</h3>
+                <p className="text-sm text-gray-600">
+                  React, Vite, Tailwind
+                </p>
+              </div>
+
+              <div className="bg-gray-100 rounded-2xl p-6">
+                <h3 className="font-semibold mb-2">Hosting</h3>
+                <p className="text-sm text-gray-600">
+                  GitHub Pages
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="bg-white border-y">
+        <div className="max-w-7xl mx-auto px-6 py-20">
+          <h2 className="text-3xl font-bold mb-6">About</h2>
+
+          <p className="text-gray-600 max-w-3xl leading-relaxed">
+            This section can describe who you are, your experience, your
+            technical background, and the type of work you build.
+          </p>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="max-w-7xl mx-auto px-6 py-20">
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-3xl font-bold">Projects</h2>
+
+          <button className="text-sm font-medium hover:text-blue-600 transition-colors">
+            View All
+          </button>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((project) => (
+            <div
+              key={project}
+              className="bg-white rounded-3xl shadow-sm border p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="h-40 bg-gray-100 rounded-2xl mb-6"></div>
+
+              <h3 className="text-xl font-semibold mb-3">
+                Project {project}
+              </h3>
+
+              <p className="text-gray-600 text-sm mb-6">
+                Add a description of your project, technologies used, and the
+                purpose of the application.
+              </p>
+
+              <button className="text-sm font-medium hover:text-blue-600 transition-colors">
+                Learn More →
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-black text-white">
+        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+          <h2 className="text-4xl font-bold mb-6">
+            Ready to build something?
+          </h2>
+
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+            This is a simple starter structure you can continue building into a
+            full professional website.
+          </p>
+
+          <button className="px-8 py-4 rounded-2xl bg-white text-black font-medium hover:bg-gray-200 transition-colors">
+            Get In Touch
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
