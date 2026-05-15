@@ -6,33 +6,33 @@ function App() {
   const [mediaType, setMediaType] = useState('movie')
 
   const searchMedia = async () => {
-  if (!search) return
+    if (!search) return
 
-  const token = import.meta.env.VITE_TMDB_API_KEY
+    const token = import.meta.env.VITE_TMDB_API_KEY
 
-  const endpoint =
-    mediaType === 'movie'
-      ? 'https://api.themoviedb.org/3/search/movie'
-      : 'https://api.themoviedb.org/3/search/tv'
+    const endpoint =
+      mediaType === 'movie'
+        ? 'https://api.themoviedb.org/3/search/movie'
+        : 'https://api.themoviedb.org/3/search/tv'
 
-  const url = `${endpoint}?query=${encodeURIComponent(search)}`
+    const url = `${endpoint}?query=${encodeURIComponent(search)}`
 
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
 
-    const data = await response.json()
+      const data = await response.json()
 
-    setResults(data.results || [])
-  } catch (error) {
-    console.error('Error fetching media:', error)
+      setResults(data.results || [])
+    } catch (error) {
+      console.error('Error fetching media:', error)
+    }
   }
-}
 
   const goHome = () => {
     setResults([])
@@ -111,26 +111,44 @@ function App() {
           <h3>Results</h3>
 
           <div className="card-container">
-            {results.map((item) => (
-              <div
-                className="media-card"
-                key={item.id}
-              >
-                <div>
-                  <h4>
-                    {item.title || item.name}
-                  </h4>
+            {results.map((item) => {
+              const posterUrl = item.poster_path
+                ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                : null
 
-                  <p>
-                    {(
-                      item.release_date ||
-                      item.first_air_date ||
-                      ''
-                    ).slice(0, 4)}
-                  </p>
+              return (
+                <div
+                  className="media-card"
+                  key={item.id}
+                >
+                  {posterUrl ? (
+                    <img
+                      src={posterUrl}
+                      alt={item.title || item.name}
+                      className="poster-image"
+                    />
+                  ) : (
+                    <div className="no-image">
+                      No Image
+                    </div>
+                  )}
+
+                  <div className="media-info">
+                    <p className="media-year">
+                      {(
+                        item.release_date ||
+                        item.first_air_date ||
+                        ''
+                      ).slice(0, 4) || 'Unknown'}
+                    </p>
+
+                    <h4 className="media-title">
+                      {item.title || item.name}
+                    </h4>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       </main>
