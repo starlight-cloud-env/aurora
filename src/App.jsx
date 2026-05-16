@@ -390,37 +390,37 @@ function App() {
           )}
 
           {modalView === 'watch' && (
-          <div className="watch-view">
-            <button
-              onClick={() => {
-                if (modalData.type === 'movie') {
-                  setModalView('details')
-                } else {
-                  setModalView('episodeDetails')
-                }
-              }}
-              style={{ marginBottom: '15px' }}
-            >
-              ← Back
-            </button>
+            <div className="watch-view">
+              <button
+                onClick={() => {
+                  if (modalData.type === 'movie') {
+                    setModalView('details')
+                  } else {
+                    setModalView('episodeDetails')
+                  }
+                }}
+                style={{ marginBottom: '15px' }}
+              >
+                ← Back
+              </button>
 
-            <div className="video-container">
-              <iframe
-                src={
-                  modalData.type === 'movie'
-                    ? `https://vidsrc.wiki/embed/movie/${selectedItem.id}`
-                    : `https://vidsrc.wiki/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                }
-                width="100%"
-                height="100%"
-                allowFullScreen
-                allow="autoplay; fullscreen; encrypted-media"
-                referrerPolicy="origin"
-                title="VidSrc Player"
-              />
+              <div className="video-container">
+                <iframe
+                  src={
+                    modalData.type === 'movie'
+                      ? `https://vidsrc.to/embed/movie/${selectedItem.id}`
+                      : `https://vidsrc.to/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                  }
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                  allow="autoplay; fullscreen; encrypted-media"
+                  referrerPolicy="origin"
+                  title="VidSrc Player"
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </section>
       </main>
     </div>
