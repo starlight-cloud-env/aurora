@@ -412,19 +412,21 @@ function App() {
                   ← Back
                 </button>
 
-                <div className="video-container">
-                  <iframe
-                    sandbox = "allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-                    src={
-                      modalData.type === 'movie'
-                        ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                        : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                    }
-                    allowFullScreen
-                  ></iframe>
-                </div>
+                <a
+                  href={
+                    modalData.type === 'movie'
+                      ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                      : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <button>
+                    Watch Now
+                  </button>
+                </a>
               </div>
-          )}
+            )}
         </section>
       </main>
     </div>
