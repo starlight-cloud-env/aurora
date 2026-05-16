@@ -404,19 +404,18 @@ function App() {
                         ← Back
                       </button>
                       
-                      <div className="video-container">
-                        <iframe
-                          src={
-                            modalData.type === 'movie'
-                              ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                              : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                          }
-                          allowFullScreen
-                          allow="autoplay; fullscreen; encrypted-media"
-                          referrerPolicy="origin"
-                          title="Aurora Player"
-                        />
-                      </div>
+                      <iframe
+                        sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                        src={
+                          modalData.type === 'movie'
+                            ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                            : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                        }
+                        allowFullScreen
+                        allow="autoplay; fullscreen; encrypted-media"
+                        referrerPolicy="no-referrer"
+                        title="Aurora Player"
+                      />
                     </div>
                   )}
 
