@@ -6,9 +6,11 @@ function App() {
   const [mediaType, setMediaType] = useState('movie')
   const [selectedItem, setSelectedItem] = useState(null)
   const [modalData, setModalData] = useState(null)
-  const [selectedSeason, setSelectedSeason] = useState(null)
+  const [modalView, setModalView] = useState('details')
+  const [currentShow, setCurrentShow] = useState(null)
+  const [currentSeason, setCurrentSeason] = useState(null)
+  const [currentEpisode, setCurrentEpisode] = useState(null)
   const [episodes, setEpisodes] = useState([])
-  const [selectedEpisode, setSelectedEpisode] = useState(null)
 
   const searchMedia = async () => {
     if (!search) return
@@ -50,6 +52,8 @@ function App() {
     setSelectedItem(item)
     setModalData(null)
 
+    setModalView('details')
+
     try {
       // MOVIE FLOW
       if (mediaType === 'movie') {
@@ -87,6 +91,8 @@ function App() {
 
         const data = await res.json()
 
+        setCurrentShow(data)
+
         setModalData({
           type: 'tv',
           name: data.name,
@@ -98,20 +104,19 @@ function App() {
     }
   }
 
-  const openSeason = async (showId, seasonNumber) => {
+  const openSeason = async (season) => {
     const token = import.meta.env.VITE_TMDB_API_KEY
 
-    setSelectedSeason(seasonNumber)
-    setEpisodes([])
-    setSelectedEpisode(null)
+    setCurrentSeason(season)
+    setModalView('episodes')
 
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNumber}`,
+        `https://api.themoviedb.org/3/tv/${currentShow.id}/season/${season.season_number}`,
         {
           headers: {
-            accept: 'application/json',
             Authorization: `Bearer ${token}`,
+            accept: 'application/json',
           },
         }
       )
@@ -125,15 +130,27 @@ function App() {
   }
 
   const openEpisode = (episode) => {
-    setSelectedEpisode(episode)
+    setCurrentEpisode({
+      ...episode,
+      showId: currentShow.id,
+      seasonNumber: currentSeason.season_number,
+      episodeNumber: episode.episode_number,
+    })
+
+    setModalView('episodeDetails')
   }
 
   const closeModal = () => {
     setSelectedItem(null)
     setModalData(null)
-    setSelectedSeason(null)
+
+    setModalView('details')
+
+    setCurrentShow(null)
+    setCurrentSeason(null)
+    setCurrentEpisode(null)
+
     setEpisodes([])
-    setSelectedEpisode(null)
   }
 
   return (
@@ -251,7 +268,7 @@ function App() {
           {selectedItem && modalData && (
             <div
               className="modal-overlay"
-              onClick={() => setSelectedItem(null)}
+              onClick={closeModal}
             >
               <div
                 className="modal"
@@ -276,7 +293,7 @@ function App() {
                     <h2>{modalData.name}</h2>
 
                     {/* LEVEL 1: SEASONS */}
-                    {!selectedSeason && !selectedEpisode && (
+                    {modalView === 'details' && (
                       <div>
                         <h3>Seasons</h3>
 
@@ -286,12 +303,7 @@ function App() {
                             .map((season) => (
                               <li key={season.id}>
                                 <button
-                                  onClick={() =>
-                                    openSeason(
-                                      selectedItem.id,
-                                      season.season_number
-                                    )
-                                  }
+                                  onClick={() => openSeason(season)}
                                 >
                                   {season.name} ({season.episode_count} episodes)
                                 </button>
@@ -302,15 +314,16 @@ function App() {
                     )}
 
                     {/* LEVEL 2: EPISODES */}
-                    {selectedSeason && !selectedEpisode && (
+                    {modalView === 'episodes' && (
                       <div>
                         <h3>
-                          Season {selectedSeason} Episodes
+                          {currentSeason?.name}
                         </h3>
 
                         <button
                           onClick={() => {
-                            setSelectedSeason(null)
+                            setModalView('details')
+                            setCurrentSeason(null)
                             setEpisodes([])
                           }}
                         >
@@ -330,21 +343,24 @@ function App() {
                     )}
 
                     {/* LEVEL 3: EPISODE DETAIL */}
-                    {selectedEpisode && (
+                    {modalView === 'episodeDetails' && (
                       <div>
                         <button
-                          onClick={() => setSelectedEpisode(null)}
+                          onClick={() => {
+                            setModalView('episodes')
+                            setCurrentEpisode(null)
+                          }}
                         >
                           ← Back to Episodes
                         </button>
 
                         <h3>
-                          Episode {selectedEpisode.episode_number}:{' '}
-                          {selectedEpisode.name}
+                          Episode {currentEpisode?.episode_number}:{' '}
+                          {currentEpisode?.name}
                         </h3>
 
                         <p style={{ marginTop: '10px' }}>
-                          {selectedEpisode.overview ||
+                          {currentEpisode?.overview ||
                             'No description available.'}
                         </p>
                       </div>
