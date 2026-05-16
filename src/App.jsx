@@ -274,117 +274,121 @@ function App() {
                 className="modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                {modalData.type === 'movie' && (
-                  <div>
-                    <h2>{modalData.title}</h2>
+                <div
+                  className="modal-content"
+                >
+                  {modalData.type === 'movie' && (
+                    <div>
+                      <h2>{modalData.title}</h2>
 
-                    <p>
-                      Runtime: {modalData.runtime} minutes
-                    </p>
+                      <p>
+                        Runtime: {modalData.runtime} minutes
+                      </p>
 
-                    <p style={{ marginTop: '10px' }}>
-                      {modalData.overview}
-                    </p>
+                      <p style={{ marginTop: '10px' }}>
+                        {modalData.overview}
+                      </p>
 
-                    <button
-                      onClick={() => setModalView('watch')}
-                      style={{ marginTop: '20px' }}
-                    >
-                      Watch Movie
-                    </button>
-                  </div>
-                )}
+                      <button
+                        onClick={() => setModalView('watch')}
+                        style={{ marginTop: '20px' }}
+                      >
+                        Watch Movie
+                      </button>
+                    </div>
+                  )}
 
-                {modalData.type === 'tv' && (
-                  <div>
-                    <h2>{modalData.name}</h2>
+                  {modalData.type === 'tv' && (
+                    <div>
+                      <h2>{modalData.name}</h2>
 
-                    {/* LEVEL 1: SEASONS */}
-                    {modalView === 'details' && (
-                      <div>
-                        <h3>Seasons</h3>
+                      {/* LEVEL 1: SEASONS */}
+                      {modalView === 'details' && (
+                        <div>
+                          <h3>Seasons</h3>
 
-                        <ul>
-                          {modalData.seasons
-                            .filter((s) => s.season_number > 0)
-                            .map((season) => (
-                              <li key={season.id}>
-                                <button
-                                  onClick={() => openSeason(season)}
-                                >
-                                  {season.name} ({season.episode_count} episodes)
+                          <ul>
+                            {modalData.seasons
+                              .filter((s) => s.season_number > 0)
+                              .map((season) => (
+                                <li key={season.id}>
+                                  <button
+                                    onClick={() => openSeason(season)}
+                                  >
+                                    {season.name} ({season.episode_count} episodes)
+                                  </button>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* LEVEL 2: EPISODES */}
+                      {modalView === 'episodes' && (
+                        <div>
+                          <h3>
+                            {currentSeason?.name}
+                          </h3>
+
+                          <button
+                            onClick={() => {
+                              setModalView('details')
+                              setCurrentSeason(null)
+                              setEpisodes([])
+                            }}
+                          >
+                            ← Back to Seasons
+                          </button>
+
+                          <ul>
+                            {episodes.map((ep) => (
+                              <li key={ep.id}>
+                                <button onClick={() => openEpisode(ep)}>
+                                  Episode {ep.episode_number}: {ep.name}
                                 </button>
                               </li>
                             ))}
-                        </ul>
-                      </div>
-                    )}
+                          </ul>
+                        </div>
+                      )}
 
-                    {/* LEVEL 2: EPISODES */}
-                    {modalView === 'episodes' && (
-                      <div>
-                        <h3>
-                          {currentSeason?.name}
-                        </h3>
+                      {/* LEVEL 3: EPISODE DETAIL */}
+                      {modalView === 'episodeDetails' && (
+                        <div>
+                          <button
+                            onClick={() => {
+                              setModalView('episodes')
+                              setCurrentEpisode(null)
+                            }}
+                          >
+                            ← Back to Episodes
+                          </button>
 
-                        <button
-                          onClick={() => {
-                            setModalView('details')
-                            setCurrentSeason(null)
-                            setEpisodes([])
-                          }}
-                        >
-                          ← Back to Seasons
-                        </button>
+                          <h3>
+                            Episode {currentEpisode?.episode_number}:{' '}
+                            {currentEpisode?.name}
+                          </h3>
 
-                        <ul>
-                          {episodes.map((ep) => (
-                            <li key={ep.id}>
-                              <button onClick={() => openEpisode(ep)}>
-                                Episode {ep.episode_number}: {ep.name}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                          <p style={{ marginTop: '10px' }}>
+                            {currentEpisode?.overview ||
+                              'No description available.'}
+                          </p>
 
-                    {/* LEVEL 3: EPISODE DETAIL */}
-                    {modalView === 'episodeDetails' && (
-                      <div>
-                        <button
-                          onClick={() => {
-                            setModalView('episodes')
-                            setCurrentEpisode(null)
-                          }}
-                        >
-                          ← Back to Episodes
-                        </button>
+                          <button
+                            onClick={() => setModalView('watch')}
+                            style={{ marginTop: '20px' }}
+                          >
+                            Watch Episode
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-                        <h3>
-                          Episode {currentEpisode?.episode_number}:{' '}
-                          {currentEpisode?.name}
-                        </h3>
-
-                        <p style={{ marginTop: '10px' }}>
-                          {currentEpisode?.overview ||
-                            'No description available.'}
-                        </p>
-
-                        <button
-                          onClick={() => setModalView('watch')}
-                          style={{ marginTop: '20px' }}
-                        >
-                          Watch Episode
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <button onClick={closeModal}>
-                  Close
-                </button>
+                  <button onClick={closeModal}>
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           )}
