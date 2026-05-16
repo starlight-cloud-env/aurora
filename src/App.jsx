@@ -389,38 +389,43 @@ function App() {
             </div>
           )}
 
-          {modalView === 'watch' && (
-            <div className="watch-view">
-              <button
-                onClick={() => {
-                  if (modalData.type === 'movie') {
-                    setModalView('details')
-                  } else {
-                    setModalView('episodeDetails')
-                  }
-                }}
-                style={{ marginBottom: '15px' }}
-              >
-                ← Back
-              </button>
+          {modalView === 'watch' &&
+            (
+              modalData.type === 'movie' ||
+              (currentShow && currentSeason && currentEpisode)
+            ) && (
+              <div className="watch-view">
+                <button
+                  onClick={() => {
+                    if (modalData.type === 'movie') {
+                      setModalView('details')
+                    } else {
+                      setModalView('episodeDetails')
+                    }
+                  }}
+                  style={{ marginBottom: '15px' }}
+                >
+                  ← Back
+                </button>
 
-              <div className="video-container">
-                <iframe
-                  sandbox = "allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-                  src= {
-                    modalData.type === 'movie'
-                      ? `https://vidsrc.to/embed/movie/${selectedItem.id}`
-                      : `https://vidsrc.to/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                  }
-                  width="100%"
-                  height="100%"
-                  allowFullScreen
-                  allow="autoplay; fullscreen; encrypted-media"
-                  referrerPolicy="origin"
-                  title="VidSrc Player"
-                />
+                <div className="video-container">
+                  <iframe
+                    sandbox = "allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                    src={
+                      modalData.type === 'movie'
+                        ? `https://vidsrc.to/embed/movie/${selectedItem.id}`
+                        : `https://vidsrc.to/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                    }
+                    width="100%"
+                    height="100%"
+                    allowFullScreen
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; encrypted-media"
+                    referrerPolicy="origin"
+                    title="VidSrc Player"
+                  />
+                </div>
               </div>
-            </div>
           )}
         </section>
       </main>
