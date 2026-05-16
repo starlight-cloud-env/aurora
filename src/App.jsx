@@ -416,14 +416,8 @@ function App() {
                         ? `https://vidsrc.to/embed/movie/${selectedItem.id}`
                         : `https://vidsrc.to/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
                     }
-                    width="100%"
-                    height="100%"
                     allowFullScreen
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; encrypted-media"
-                    referrerPolicy="origin"
-                    title="VidSrc Player"
-                  />
+                  ></iframe>
                 </div>
               </div>
           )}
