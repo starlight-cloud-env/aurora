@@ -406,7 +406,6 @@ function App() {
                       
                       <div className="video-container">
                         <iframe
-                          sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
                           src={
                             modalData.type === 'movie'
                               ? `https://vsembed.su/embed/movie/${selectedItem.id}`
