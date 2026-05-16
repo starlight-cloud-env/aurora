@@ -201,13 +201,14 @@ a {
 
 .video-container {
   width: 100%;
-  border-radius: 12px;
+  height: 70vh;
   overflow: hidden;
-  margin-top: 10px;
+  border-radius: 12px;
 }
 
 .video-container iframe {
   width: 100%;
-  min-height: 70vh;
-  background: black;
+  height: 100%;
+  display: block;
+  border: none;
 }
