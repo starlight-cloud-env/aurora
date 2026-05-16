@@ -412,18 +412,18 @@ function App() {
                   ← Back
                 </button>
 
-                <a
-                  href={
-                    modalData.type === 'movie'
-                      ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                      : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="watch-button"
+                <button
+                  onClick={() => {
+                    const url =
+                      modalData.type === 'movie'
+                        ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                        : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+
+                    window.open(url, '_blank', 'noopener,noreferrer')
+                  }}
                 >
                   Watch Now
-                </a>
+                </button>
               </div>
             )}
         </section>
