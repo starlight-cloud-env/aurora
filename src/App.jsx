@@ -385,6 +385,40 @@ function App() {
                     </div>
                   )}
 
+                  {modalView === 'watch' &&
+                  (
+                    modalData.type === 'movie' ||
+                    (currentShow && currentSeason && currentEpisode)
+                  ) && (
+                    <div className="watch-view">
+                      <button
+                        onClick={() => {
+                          if (modalData.type === 'movie') {
+                            setModalView('details')
+                          } else {
+                            setModalView('episodeDetails')
+                          }
+                        }}
+                        style={{ marginBottom: '15px' }}
+                      >
+                        ← Back
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const url =
+                            modalData.type === 'movie'
+                              ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                              : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+
+                          window.open(url, '_blank', 'noopener,noreferrer')
+                        }}
+                      >
+                        Watch Now
+                      </button>
+                    </div>
+                  )}
+
                   <button onClick={closeModal}>
                     Close
                   </button>
@@ -392,40 +426,6 @@ function App() {
               </div>
             </div>
           )}
-
-          {modalView === 'watch' &&
-            (
-              modalData.type === 'movie' ||
-              (currentShow && currentSeason && currentEpisode)
-            ) && (
-              <div className="watch-view">
-                <button
-                  onClick={() => {
-                    if (modalData.type === 'movie') {
-                      setModalView('details')
-                    } else {
-                      setModalView('episodeDetails')
-                    }
-                  }}
-                  style={{ marginBottom: '15px' }}
-                >
-                  ← Back
-                </button>
-
-                <button
-                  onClick={() => {
-                    const url =
-                      modalData.type === 'movie'
-                        ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                        : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-
-                    window.open(url, '_blank', 'noopener,noreferrer')
-                  }}
-                >
-                  Watch Now
-                </button>
-              </div>
-            )}
         </section>
       </main>
     </div>
