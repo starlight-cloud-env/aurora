@@ -411,11 +411,7 @@ function App() {
                     ? `https://vidsrc.wiki/embed/movie/${selectedItem.id}`
                     : `https://vidsrc.wiki/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
                 }
-                width="100%"
-                height="500"
                 allowFullScreen
-                referrerPolicy="origin"
-                title="VidSrc Player"
               />
             </div>
           </div>
