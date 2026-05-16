@@ -408,13 +408,12 @@ function App() {
               <iframe
                 src={
                   modalData.type === 'movie'
-                    ? `https://vidsrc.xyz/embed/movie/${selectedItem.id}`
-                    : `https://vidsrc.xyz/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                    ? `https://vidsrc.wiki/embed/movie/${selectedItem.id}`
+                    : `https://vidsrc.wiki/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
                 }
                 width="100%"
                 height="500"
                 allowFullScreen
-                frameBorder="0"
                 referrerPolicy="origin"
                 title="VidSrc Player"
               />
