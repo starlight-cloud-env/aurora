@@ -194,3 +194,20 @@ a {
 
   cursor: pointer;
 }
+
+.watch-view {
+  width: 100%;
+}
+
+.video-container {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.video-container iframe {
+  width: 100%;
+  min-height: 70vh;
+  background: black;
+}

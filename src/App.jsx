@@ -285,6 +285,13 @@ function App() {
                     <p style={{ marginTop: '10px' }}>
                       {modalData.overview}
                     </p>
+
+                    <button
+                      onClick={() => setModalView('watch')}
+                      style={{ marginTop: '20px' }}
+                    >
+                      Watch Movie
+                    </button>
                   </div>
                 )}
 
@@ -363,6 +370,13 @@ function App() {
                           {currentEpisode?.overview ||
                             'No description available.'}
                         </p>
+
+                        <button
+                          onClick={() => setModalView('watch')}
+                          style={{ marginTop: '20px' }}
+                        >
+                          Watch Episode
+                        </button>
                       </div>
                     )}
                   </div>
@@ -374,6 +388,39 @@ function App() {
               </div>
             </div>
           )}
+
+          {modalView === 'watch' && (
+          <div className="watch-view">
+            <button
+              onClick={() => {
+                if (modalData.type === 'movie') {
+                  setModalView('details')
+                } else {
+                  setModalView('episodeDetails')
+                }
+              }}
+              style={{ marginBottom: '15px' }}
+            >
+              ← Back
+            </button>
+
+            <div className="video-container">
+              <iframe
+                src={
+                  modalData.type === 'movie'
+                    ? `https://vidsrc.xyz/embed/movie/${selectedItem.id}`
+                    : `https://vidsrc.xyz/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                }
+                width="100%"
+                height="500"
+                allowFullScreen
+                frameBorder="0"
+                referrerPolicy="origin"
+                title="VidSrc Player"
+              />
+            </div>
+          </div>
+        )}
         </section>
       </main>
     </div>
