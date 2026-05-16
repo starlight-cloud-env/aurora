@@ -420,10 +420,9 @@ function App() {
                   }
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="watch-button"
                 >
-                  <button>
-                    Watch Now
-                  </button>
+                  Watch Now
                 </a>
               </div>
             )}

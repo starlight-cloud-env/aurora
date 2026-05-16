@@ -230,3 +230,24 @@ a {
 
   display: block;
 }
+
+.watch-button {
+  display: inline-block;
+
+  padding: 12px 20px;
+
+  background: #e50914;
+  color: white;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.watch-button:hover {
+  opacity: 0.9;
+}
