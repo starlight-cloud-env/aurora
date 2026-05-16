@@ -403,19 +403,21 @@ function App() {
                       >
                         ← Back
                       </button>
-
-                      <button
-                        onClick={() => {
-                          const url =
+                      
+                      <div className="video-container">
+                        <iframe
+                          sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                          src={
                             modalData.type === 'movie'
                               ? `https://vsembed.su/embed/movie/${selectedItem.id}`
                               : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-
-                          window.open(url, '_blank', 'noopener,noreferrer')
-                        }}
-                      >
-                        Watch Now
-                      </button>
+                          }
+                          allowFullScreen
+                          allow="autoplay; fullscreen; encrypted-media"
+                          referrerPolicy="origin"
+                          title="Aurora Player"
+                        />
+                      </div>
                     </div>
                   )}
 
