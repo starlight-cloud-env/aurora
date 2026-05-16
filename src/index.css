@@ -216,10 +216,10 @@ a {
   width: 100%;
   height: calc(100vh - 180px);
 
-  background: black;
+  background: lightgray;
 
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .video-container iframe {
