@@ -264,7 +264,7 @@ function App() {
             })}
           </div>
 
-          {/* MODAL MUST BE OUTSIDE GRID */}
+          {/* MODAL */}
           {selectedItem && modalData && (
             <div
               className="modal-overlay"
@@ -274,197 +274,193 @@ function App() {
                 className="modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div
-                  className="modal-content"
-                >
+                {/* HEADER */}
+                <div className="modal-header">
+                  <h2>
+                    {modalData.type === 'movie'
+                      ? modalData.title
+                      : modalData.name}
+                  </h2>
+
                   {modalData.type === 'movie' && (
+                    <p>
+                      {modalData.runtime} minutes
+                    </p>
+                  )}
+                </div>
+
+                {/* BODY */}
+                <div className="modal-body">
+
+                  {/* MOVIE DETAILS */}
+                  {modalData.type === 'movie' &&
+                    modalView === 'details' && (
+                      <div>
+                        <p>{modalData.overview}</p>
+                      </div>
+                    )}
+
+                  {/* TV SEASONS */}
+                  {modalData.type === 'tv' &&
+                    modalView === 'details' && (
+                      <div>
+                        <h3>Seasons</h3>
+
+                        <ul>
+                          {modalData.seasons
+                            .filter((s) => s.season_number > 0)
+                            .map((season) => (
+                              <li key={season.id}>
+                                <button
+                                  onClick={() =>
+                                    openSeason(season)
+                                  }
+                                >
+                                  {season.name} (
+                                  {season.episode_count}{' '}
+                                  episodes)
+                                </button>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
+
+                  {/* EPISODES */}
+                  {modalView === 'episodes' && (
                     <div>
-                      <h2>{modalData.title}</h2>
+                      <h3>
+                        {currentSeason?.name}
+                      </h3>
 
-                      <p>
-                        Runtime: {modalData.runtime} minutes
-                      </p>
-
-                      <p style={{ marginTop: '10px' }}>
-                        {modalData.overview}
-                      </p>
-
-                      <button
-                        onClick={() => setModalView('watch')}
-                        style={{ marginTop: '20px' }}
-                      >
-                        Watch Movie
-                      </button>
-                    </div>
-                  )}
-
-                  {modalData.type === 'tv' && (
-                    <div
-                      className="modal"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="modal-header">
-                        <h2>
-                          {modalData.type === 'movie'
-                            ? modalData.title
-                            : modalData.name}
-                        </h2>
-
-                        {modalData.type === 'movie' && (
-                          <p>{modalData.runtime} minutes</p>
-                        )}
-                      </div>
-
-                      <div className="modal-body">
-
-                        {/* MOVIE DETAILS */}
-                        {modalData.type === 'movie' &&
-                          modalView === 'details' && (
-                            <div>
-                              <p>{modalData.overview}</p>
-                            </div>
-                          )}
-
-                        {/* TV SEASONS */}
-                        {modalData.type === 'tv' &&
-                          modalView === 'details' && (
-                            <div>
-                              <h3>Seasons</h3>
-
-                              <ul>
-                                {modalData.seasons
-                                  .filter((s) => s.season_number > 0)
-                                  .map((season) => (
-                                    <li key={season.id}>
-                                      <button
-                                        onClick={() => openSeason(season)}
-                                      >
-                                        {season.name}
-                                      </button>
-                                    </li>
-                                  ))}
-                              </ul>
-                            </div>
-                          )}
-
-                        {/* EPISODES */}
-                        {modalView === 'episodes' && (
-                          <div>
-                            <h3>{currentSeason?.name}</h3>
-
-                            <ul>
-                              {episodes.map((ep) => (
-                                <li key={ep.id}>
-                                  <button onClick={() => openEpisode(ep)}>
-                                    Episode {ep.episode_number}: {ep.name}
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* EPISODE DETAILS */}
-                        {modalView === 'episodeDetails' && (
-                          <div>
-                            <h3>
-                              Episode {currentEpisode?.episode_number}
-                            </h3>
-
-                            <p>
-                              {currentEpisode?.overview ||
-                                'No description available.'}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* WATCH VIEW */}
-                        {modalView === 'watch' && (
-                          <div className="watch-view">
-                            <div className="video-container">
-                              <iframe
-                                src={
-                                  modalData.type === 'movie'
-                                    ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                                    : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                                }
-                                allowFullScreen
-                                allow="autoplay; fullscreen; encrypted-media"
-                                referrerPolicy="no-referrer"
-                                title="Aurora Player"
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="modal-footer">
-                        <button onClick={closeModal}>
-                          Close
-                        </button>
-
-                        <div className="modal-actions">
-                          {modalView !== 'watch' && (
-                            <button
-                              onClick={() => setModalView('watch')}
-                            >
-                              Watch
-                            </button>
-                          )}
-
-                          {modalView === 'watch' && (
-                            <button
-                              onClick={() => {
-                                if (modalData.type === 'movie') {
-                                  setModalView('details')
-                                } else {
-                                  setModalView('episodeDetails')
-                                }
-                              }}
-                            >
-                              Back
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {modalView === 'watch' &&
-                  (
-                    modalData.type === 'movie' ||
-                    (currentShow && currentSeason && currentEpisode)
-                  ) && (
-                    <div className="watch-view">
                       <button
                         onClick={() => {
-                          if (modalData.type === 'movie') {
-                            setModalView('details')
-                          } else {
-                            setModalView('episodeDetails')
-                          }
+                          setModalView('details')
+                          setCurrentSeason(null)
+                          setEpisodes([])
                         }}
-                        style={{ marginBottom: '15px' }}
+                        style={{
+                          marginBottom: '20px',
+                        }}
                       >
-                        ← Back
+                        ← Back to Seasons
                       </button>
-                      
-                      <iframe
-                        src={
-                          modalData.type === 'movie'
-                            ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                            : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                        }
-                        allowFullScreen
-                        allow="autoplay; fullscreen; encrypted-media"
-                        title="Aurora Player"
-                      />
+
+                      <ul>
+                        {episodes.map((ep) => (
+                          <li key={ep.id}>
+                            <button
+                              onClick={() =>
+                                openEpisode(ep)
+                              }
+                            >
+                              Episode{' '}
+                              {ep.episode_number}:{' '}
+                              {ep.name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
 
+                  {/* EPISODE DETAILS */}
+                  {modalView ===
+                    'episodeDetails' && (
+                    <div>
+                      <button
+                        onClick={() => {
+                          setModalView('episodes')
+                          setCurrentEpisode(null)
+                        }}
+                        style={{
+                          marginBottom: '20px',
+                        }}
+                      >
+                        ← Back to Episodes
+                      </button>
+
+                      <h3>
+                        Episode{' '}
+                        {
+                          currentEpisode?.episode_number
+                        }
+                        : {currentEpisode?.name}
+                      </h3>
+
+                      <p>
+                        {currentEpisode?.overview ||
+                          'No description available.'}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* WATCH VIEW */}
+                  {modalView === 'watch' && (
+                    <div className="watch-view">
+                      <div className="video-container">
+                        <iframe
+                          src={
+                            modalData.type ===
+                            'movie'
+                              ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                              : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                          }
+                          allowFullScreen
+                          allow="autoplay; fullscreen; encrypted-media"
+                          referrerPolicy="no-referrer"
+                          title="Aurora Player"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* FOOTER */}
+                <div className="modal-footer">
                   <button onClick={closeModal}>
                     Close
                   </button>
+
+                  <div className="modal-actions">
+
+                    {/* WATCH BUTTON */}
+                    {(
+                      modalData.type === 'movie' ||
+                      currentEpisode
+                    ) &&
+                      modalView !== 'watch' && (
+                        <button
+                          onClick={() =>
+                            setModalView('watch')
+                          }
+                        >
+                          Watch
+                        </button>
+                      )}
+
+                    {/* BACK BUTTON */}
+                    {modalView === 'watch' && (
+                      <button
+                        onClick={() => {
+                          if (
+                            modalData.type ===
+                            'movie'
+                          ) {
+                            setModalView(
+                              'details'
+                            )
+                          } else {
+                            setModalView(
+                              'episodeDetails'
+                            )
+                          }
+                        }}
+                      >
+                        Back
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
