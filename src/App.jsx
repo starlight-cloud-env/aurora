@@ -299,89 +299,134 @@ function App() {
                   )}
 
                   {modalData.type === 'tv' && (
-                    <div>
-                      <h2>{modalData.name}</h2>
+                    <div
+                      className="modal"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="modal-header">
+                        <h2>
+                          {modalData.type === 'movie'
+                            ? modalData.title
+                            : modalData.name}
+                        </h2>
 
-                      {/* LEVEL 1: SEASONS */}
-                      {modalView === 'details' && (
-                        <div>
-                          <h3>Seasons</h3>
+                        {modalData.type === 'movie' && (
+                          <p>{modalData.runtime} minutes</p>
+                        )}
+                      </div>
 
-                          <ul>
-                            {modalData.seasons
-                              .filter((s) => s.season_number > 0)
-                              .map((season) => (
-                                <li key={season.id}>
-                                  <button
-                                    onClick={() => openSeason(season)}
-                                  >
-                                    {season.name} ({season.episode_count} episodes)
+                      <div className="modal-body">
+
+                        {/* MOVIE DETAILS */}
+                        {modalData.type === 'movie' &&
+                          modalView === 'details' && (
+                            <div>
+                              <p>{modalData.overview}</p>
+                            </div>
+                          )}
+
+                        {/* TV SEASONS */}
+                        {modalData.type === 'tv' &&
+                          modalView === 'details' && (
+                            <div>
+                              <h3>Seasons</h3>
+
+                              <ul>
+                                {modalData.seasons
+                                  .filter((s) => s.season_number > 0)
+                                  .map((season) => (
+                                    <li key={season.id}>
+                                      <button
+                                        onClick={() => openSeason(season)}
+                                      >
+                                        {season.name}
+                                      </button>
+                                    </li>
+                                  ))}
+                              </ul>
+                            </div>
+                          )}
+
+                        {/* EPISODES */}
+                        {modalView === 'episodes' && (
+                          <div>
+                            <h3>{currentSeason?.name}</h3>
+
+                            <ul>
+                              {episodes.map((ep) => (
+                                <li key={ep.id}>
+                                  <button onClick={() => openEpisode(ep)}>
+                                    Episode {ep.episode_number}: {ep.name}
                                   </button>
                                 </li>
                               ))}
-                          </ul>
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* EPISODE DETAILS */}
+                        {modalView === 'episodeDetails' && (
+                          <div>
+                            <h3>
+                              Episode {currentEpisode?.episode_number}
+                            </h3>
+
+                            <p>
+                              {currentEpisode?.overview ||
+                                'No description available.'}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* WATCH VIEW */}
+                        {modalView === 'watch' && (
+                          <div className="watch-view">
+                            <div className="video-container">
+                              <iframe
+                                src={
+                                  modalData.type === 'movie'
+                                    ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                                    : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                                }
+                                allowFullScreen
+                                allow="autoplay; fullscreen; encrypted-media"
+                                referrerPolicy="no-referrer"
+                                title="Aurora Player"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="modal-footer">
+                        <button onClick={closeModal}>
+                          Close
+                        </button>
+
+                        <div className="modal-actions">
+                          {modalView !== 'watch' && (
+                            <button
+                              onClick={() => setModalView('watch')}
+                            >
+                              Watch
+                            </button>
+                          )}
+
+                          {modalView === 'watch' && (
+                            <button
+                              onClick={() => {
+                                if (modalData.type === 'movie') {
+                                  setModalView('details')
+                                } else {
+                                  setModalView('episodeDetails')
+                                }
+                              }}
+                            >
+                              Back
+                            </button>
+                          )}
                         </div>
-                      )}
-
-                      {/* LEVEL 2: EPISODES */}
-                      {modalView === 'episodes' && (
-                        <div>
-                          <h3>
-                            {currentSeason?.name}
-                          </h3>
-
-                          <button
-                            onClick={() => {
-                              setModalView('details')
-                              setCurrentSeason(null)
-                              setEpisodes([])
-                            }}
-                          >
-                            ← Back to Seasons
-                          </button>
-
-                          <ul>
-                            {episodes.map((ep) => (
-                              <li key={ep.id}>
-                                <button onClick={() => openEpisode(ep)}>
-                                  Episode {ep.episode_number}: {ep.name}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* LEVEL 3: EPISODE DETAIL */}
-                      {modalView === 'episodeDetails' && (
-                        <div>
-                          <button
-                            onClick={() => {
-                              setModalView('episodes')
-                              setCurrentEpisode(null)
-                            }}
-                          >
-                            ← Back to Episodes
-                          </button>
-
-                          <h3>
-                            Episode {currentEpisode?.episode_number}:{' '}
-                            {currentEpisode?.name}
-                          </h3>
-
-                          <p style={{ marginTop: '10px' }}>
-                            {currentEpisode?.overview ||
-                              'No description available.'}
-                          </p>
-
-                          <button
-                            onClick={() => setModalView('watch')}
-                            style={{ marginTop: '20px' }}
-                          >
-                            Watch Episode
-                          </button>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   )}
 

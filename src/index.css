@@ -387,15 +387,19 @@ input {
 
 .video-container {
   width: 100%;
-  height: calc(100vh - 220px);
+  height: 100%;
 
-  margin-top: 20px;
+  min-height: 420px;
+
+  margin-top: 18px;
 
   background: black;
 
-  border-radius: 16px;
+  border-radius: 18px;
 
   overflow: hidden;
+
+  border: 1px solid var(--border);
 }
 
 .video-container iframe {
