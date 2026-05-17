@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function App() {
   const [search, setSearch] = useState('')
@@ -11,6 +11,10 @@ function App() {
   const [currentSeason, setCurrentSeason] = useState(null)
   const [currentEpisode, setCurrentEpisode] = useState(null)
   const [episodes, setEpisodes] = useState([])
+  const [trendingMovies, setTrendingMovies] = useState([])
+  const [trendingShows, setTrendingShows] = useState([])
+  const [popularMovies, setPopularMovies] = useState([])
+  const [popularShows, setPopularShows] = useState([])
 
   const searchMedia = async () => {
     if (!search) return
@@ -38,6 +42,74 @@ function App() {
       setResults(data.results || [])
     } catch (error) {
       console.error('Error fetching media:', error)
+    }
+  }
+
+  const fetchHomepageMedia = async () => {
+    const token = import.meta.env.VITE_TMDB_API_KEY
+
+    try {
+      const headers = {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+
+      const [
+        trendingMovieRes,
+        trendingTvRes,
+        popularMovieRes,
+        popularTvRes,
+      ] = await Promise.all([
+        fetch(
+          'https://api.themoviedb.org/3/trending/movie/week',
+          { headers }
+        ),
+
+        fetch(
+          'https://api.themoviedb.org/3/trending/tv/week',
+          { headers }
+        ),
+
+        fetch(
+          'https://api.themoviedb.org/3/movie/popular',
+          { headers }
+        ),
+
+        fetch(
+          'https://api.themoviedb.org/3/tv/popular',
+          { headers }
+        ),
+      ])
+
+      const trendingMovieData =
+        await trendingMovieRes.json()
+
+      const trendingTvData =
+        await trendingTvRes.json()
+
+      const popularMovieData =
+        await popularMovieRes.json()
+
+      const popularTvData =
+        await popularTvRes.json()
+
+      setTrendingMovies(
+        trendingMovieData.results || []
+      )
+
+      setTrendingShows(
+        trendingTvData.results || []
+      )
+
+      setPopularMovies(
+        popularMovieData.results || []
+      )
+
+      setPopularShows(
+        popularTvData.results || []
+      )
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -153,6 +225,64 @@ function App() {
     setEpisodes([])
   }
 
+  useEffect(() => {
+    fetchHomepageMedia()
+  }, [])
+
+  const renderMediaRow = (title, items) => (
+    <section className="media-row">
+      <h3>{title}</h3>
+
+      <div className="horizontal-row">
+        {items.map((item) => {
+          const posterUrl = item.poster_path
+            ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+            : null
+
+          return (
+            <div
+              className="media-card row-card"
+              key={`${title}-${item.id}`}
+              onClick={() => {
+                setMediaType(
+                  item.title ? 'movie' : 'tv'
+                )
+
+                openItem(item)
+              }}
+            >
+              {posterUrl ? (
+                <img
+                  src={posterUrl}
+                  alt={item.title || item.name}
+                  className="poster-image"
+                />
+              ) : (
+                <div className="no-image">
+                  No Image
+                </div>
+              )}
+
+              <div className="media-info">
+                <p className="media-year">
+                  {(
+                    item.release_date ||
+                    item.first_air_date ||
+                    ''
+                  ).slice(0, 4) || 'Unknown'}
+                </p>
+
+                <h4 className="media-title">
+                  {item.title || item.name}
+                </h4>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+
   return (
     <div className="app">
       <header className="navbar">
@@ -220,252 +350,274 @@ function App() {
             </button>
           </div>
         </section>
+        
+        {results.length > 0 && (
+          <section className="content-row">
+            <h3>Results</h3>
 
-        <section className="content-row">
-          <h3>Results</h3>
+            <div className="card-container">
+              {results.map((item) => {
+                const posterUrl = item.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                  : null
 
-          <div className="card-container">
-            {results.map((item) => {
-              const posterUrl = item.poster_path
-                ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                : null
-
-              return (
-                <div
-                  className="media-card"
-                  key={item.id}
-                  onClick={() => openItem(item)}
-                >
-                  {posterUrl ? (
-                    <img
-                      src={posterUrl}
-                      alt={item.title || item.name}
-                      className="poster-image"
-                    />
-                  ) : (
-                    <div className="no-image">No Image</div>
-                  )}
-
-                  <div className="media-info">
-                    <p className="media-year">
-                      {(
-                        item.release_date ||
-                        item.first_air_date ||
-                        ''
-                      ).slice(0, 4) || 'Unknown'}
-                    </p>
-
-                    <h4 className="media-title">
-                      {item.title || item.name}
-                    </h4>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* MODAL */}
-          {selectedItem && modalData && (
-            <div
-              className="modal-overlay"
-              onClick={closeModal}
-            >
-              <div
-                className="modal"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* HEADER */}
-                <div className="modal-header">
-                  <h2>
-                    {modalData.type === 'movie'
-                      ? modalData.title
-                      : modalData.name}
-                  </h2>
-
-                  {modalData.type === 'movie' && (
-                    <p>
-                      {modalData.runtime} minutes
-                    </p>
-                  )}
-                </div>
-
-                {/* BODY */}
-                <div className="modal-body">
-
-                  {/* MOVIE DETAILS */}
-                  {modalData.type === 'movie' &&
-                    modalView === 'details' && (
-                      <div>
-                        <p>{modalData.overview}</p>
-                      </div>
+                return (
+                  <div
+                    className="media-card"
+                    key={item.id}
+                    onClick={() => openItem(item)}
+                  >
+                    {posterUrl ? (
+                      <img
+                        src={posterUrl}
+                        alt={item.title || item.name}
+                        className="poster-image"
+                      />
+                    ) : (
+                      <div className="no-image">No Image</div>
                     )}
 
-                  {/* TV SEASONS */}
-                  {modalData.type === 'tv' &&
-                    modalView === 'details' && (
+                    <div className="media-info">
+                      <p className="media-year">
+                        {(
+                          item.release_date ||
+                          item.first_air_date ||
+                          ''
+                        ).slice(0, 4) || 'Unknown'}
+                      </p>
+
+                      <h4 className="media-title">
+                        {item.title || item.name}
+                      </h4>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* MODAL */}
+            {selectedItem && modalData && (
+              <div
+                className="modal-overlay"
+                onClick={closeModal}
+              >
+                <div
+                  className="modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* HEADER */}
+                  <div className="modal-header">
+                    <h2>
+                      {modalData.type === 'movie'
+                        ? modalData.title
+                        : modalData.name}
+                    </h2>
+
+                    {modalData.type === 'movie' && (
+                      <p>
+                        {modalData.runtime} minutes
+                      </p>
+                    )}
+                  </div>
+
+                  {/* BODY */}
+                  <div className="modal-body">
+
+                    {/* MOVIE DETAILS */}
+                    {modalData.type === 'movie' &&
+                      modalView === 'details' && (
+                        <div>
+                          <p>{modalData.overview}</p>
+                        </div>
+                      )}
+
+                    {/* TV SEASONS */}
+                    {modalData.type === 'tv' &&
+                      modalView === 'details' && (
+                        <div>
+                          <h3>Seasons</h3>
+
+                          <ul>
+                            {modalData.seasons
+                              .filter((s) => s.season_number > 0)
+                              .map((season) => (
+                                <li key={season.id}>
+                                  <button
+                                    onClick={() =>
+                                      openSeason(season)
+                                    }
+                                  >
+                                    {season.name} (
+                                    {season.episode_count}{' '}
+                                    episodes)
+                                  </button>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                      )}
+
+                    {/* EPISODES */}
+                    {modalView === 'episodes' && (
                       <div>
-                        <h3>Seasons</h3>
+                        <h3>
+                          {currentSeason?.name}
+                        </h3>
+
+                        <button
+                          onClick={() => {
+                            setModalView('details')
+                            setCurrentSeason(null)
+                            setEpisodes([])
+                          }}
+                          style={{
+                            marginBottom: '20px',
+                          }}
+                        >
+                          ← Back to Seasons
+                        </button>
 
                         <ul>
-                          {modalData.seasons
-                            .filter((s) => s.season_number > 0)
-                            .map((season) => (
-                              <li key={season.id}>
-                                <button
-                                  onClick={() =>
-                                    openSeason(season)
-                                  }
-                                >
-                                  {season.name} (
-                                  {season.episode_count}{' '}
-                                  episodes)
-                                </button>
-                              </li>
-                            ))}
+                          {episodes.map((ep) => (
+                            <li key={ep.id}>
+                              <button
+                                onClick={() =>
+                                  openEpisode(ep)
+                                }
+                              >
+                                Episode{' '}
+                                {ep.episode_number}:{' '}
+                                {ep.name}
+                              </button>
+                            </li>
+                          ))}
                         </ul>
                       </div>
                     )}
 
-                  {/* EPISODES */}
-                  {modalView === 'episodes' && (
-                    <div>
-                      <h3>
-                        {currentSeason?.name}
-                      </h3>
-
-                      <button
-                        onClick={() => {
-                          setModalView('details')
-                          setCurrentSeason(null)
-                          setEpisodes([])
-                        }}
-                        style={{
-                          marginBottom: '20px',
-                        }}
-                      >
-                        ← Back to Seasons
-                      </button>
-
-                      <ul>
-                        {episodes.map((ep) => (
-                          <li key={ep.id}>
-                            <button
-                              onClick={() =>
-                                openEpisode(ep)
-                              }
-                            >
-                              Episode{' '}
-                              {ep.episode_number}:{' '}
-                              {ep.name}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* EPISODE DETAILS */}
-                  {modalView ===
-                    'episodeDetails' && (
-                    <div>
-                      <button
-                        onClick={() => {
-                          setModalView('episodes')
-                          setCurrentEpisode(null)
-                        }}
-                        style={{
-                          marginBottom: '20px',
-                        }}
-                      >
-                        ← Back to Episodes
-                      </button>
-
-                      <h3>
-                        Episode{' '}
-                        {
-                          currentEpisode?.episode_number
-                        }
-                        : {currentEpisode?.name}
-                      </h3>
-
-                      <p>
-                        {currentEpisode?.overview ||
-                          'No description available.'}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* WATCH VIEW */}
-                  {modalView === 'watch' && (
-                    <div className="watch-view">
-                      <div className="video-container">
-                        <iframe
-                          src={
-                            modalData.type ===
-                            'movie'
-                              ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                              : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                          }
-                          allowFullScreen
-                          allow="autoplay; fullscreen; encrypted-media"
-                          referrerPolicy="no-referrer"
-                          title="Aurora Player"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* FOOTER */}
-                <div className="modal-footer">
-                  <button onClick={closeModal}>
-                    Close
-                  </button>
-
-                  <div className="modal-actions">
-
-                    {/* WATCH BUTTON */}
-                    {(
-                      modalData.type === 'movie' ||
-                      currentEpisode
-                    ) &&
-                      modalView !== 'watch' && (
+                    {/* EPISODE DETAILS */}
+                    {modalView ===
+                      'episodeDetails' && (
+                      <div>
                         <button
-                          onClick={() =>
-                            setModalView('watch')
-                          }
+                          onClick={() => {
+                            setModalView('episodes')
+                            setCurrentEpisode(null)
+                          }}
+                          style={{
+                            marginBottom: '20px',
+                          }}
                         >
-                          Watch
+                          ← Back to Episodes
+                        </button>
+
+                        <h3>
+                          Episode{' '}
+                          {
+                            currentEpisode?.episode_number
+                          }
+                          : {currentEpisode?.name}
+                        </h3>
+
+                        <p>
+                          {currentEpisode?.overview ||
+                            'No description available.'}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* WATCH VIEW */}
+                    {modalView === 'watch' && (
+                      <div className="watch-view">
+                        <div className="video-container">
+                          <iframe
+                            src={
+                              modalData.type ===
+                              'movie'
+                                ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                                : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                            }
+                            allowFullScreen
+                            allow="autoplay; fullscreen; encrypted-media"
+                            referrerPolicy="no-referrer"
+                            title="Aurora Player"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* FOOTER */}
+                  <div className="modal-footer">
+                    <button onClick={closeModal}>
+                      Close
+                    </button>
+
+                    <div className="modal-actions">
+
+                      {/* WATCH BUTTON */}
+                      {(
+                        modalData.type === 'movie' ||
+                        currentEpisode
+                      ) &&
+                        modalView !== 'watch' && (
+                          <button
+                            onClick={() =>
+                              setModalView('watch')
+                            }
+                          >
+                            Watch
+                          </button>
+                        )}
+
+                      {/* BACK BUTTON */}
+                      {modalView === 'watch' && (
+                        <button
+                          onClick={() => {
+                            if (
+                              modalData.type ===
+                              'movie'
+                            ) {
+                              setModalView(
+                                'details'
+                              )
+                            } else {
+                              setModalView(
+                                'episodeDetails'
+                              )
+                            }
+                          }}
+                        >
+                          Back
                         </button>
                       )}
-
-                    {/* BACK BUTTON */}
-                    {modalView === 'watch' && (
-                      <button
-                        onClick={() => {
-                          if (
-                            modalData.type ===
-                            'movie'
-                          ) {
-                            setModalView(
-                              'details'
-                            )
-                          } else {
-                            setModalView(
-                              'episodeDetails'
-                            )
-                          }
-                        }}
-                      >
-                        Back
-                      </button>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </section>
+            )}
+          </section>
+        )}
+
+        {renderMediaRow(
+          'Trending Movies',
+          trendingMovies
+        )}
+
+        {renderMediaRow(
+          'Trending Shows',
+          trendingShows
+        )}
+
+        {renderMediaRow(
+          'Popular Movies',
+          popularMovies
+        )}
+
+        {renderMediaRow(
+          'Popular Shows',
+          popularShows
+        )}
       </main>
     </div>
   )
