@@ -405,7 +405,7 @@ function App() {
                       </button>
                       
                       <iframe
-                        sandbox="allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
+                        
                         src={
                           modalData.type === 'movie'
                             ? `https://vsembed.su/embed/movie/${selectedItem.id}`
@@ -413,7 +413,7 @@ function App() {
                         }
                         allowFullScreen
                         allow="autoplay; fullscreen; encrypted-media"
-                        referrerPolicy="origin-when-cross-origin"
+                        
                         title="Aurora Player"
                       />
                     </div>
