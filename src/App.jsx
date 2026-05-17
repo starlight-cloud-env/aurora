@@ -405,7 +405,6 @@ function App() {
                       </button>
                       
                       <iframe
-                        
                         src={
                           modalData.type === 'movie'
                             ? `https://vsembed.su/embed/movie/${selectedItem.id}`
@@ -413,7 +412,6 @@ function App() {
                         }
                         allowFullScreen
                         allow="autoplay; fullscreen; encrypted-media"
-                        
                         title="Aurora Player"
                       />
                     </div>

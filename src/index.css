@@ -343,6 +343,41 @@ input {
   line-height: 1.7;
 }
 
+.modal-header {
+  padding: 24px 28px 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  flex-shrink: 0;
+}
+
+.modal-body {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 24px 28px;
+}
+
+.modal-footer {
+  padding: 18px 28px;
+
+  border-top: 1px solid var(--border);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
 /* WATCH */
 
 .watch-view {
