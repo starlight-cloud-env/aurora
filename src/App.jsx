@@ -15,6 +15,7 @@ function App() {
   const [trendingShows, setTrendingShows] = useState([])
   const [popularMovies, setPopularMovies] = useState([])
   const [popularShows, setPopularShows] = useState([])
+  const [bookmarks, setBookmarks] = useState([])
 
   const searchMedia = async () => {
     if (!search) return
@@ -225,8 +226,46 @@ function App() {
     setEpisodes([])
   }
 
+  const toggleBookmark = (item) => {
+    const exists = bookmarks.some(
+      (bookmark) => bookmark.id === item.id
+    )
+
+    let updatedBookmarks
+
+    if (exists) {
+      updatedBookmarks = bookmarks.filter(
+        (bookmark) => bookmark.id !== item.id
+      )
+    } else {
+      updatedBookmarks = [
+        ...bookmarks,
+        {
+          id: item.id,
+          title: item.title,
+          name: item.name,
+          poster_path: item.poster_path,
+          release_date: item.release_date,
+          first_air_date: item.first_air_date,
+        },
+      ]
+    }
+
+    setBookmarks(updatedBookmarks)
+
+    localStorage.setItem(
+      'auroraBookmarks',
+      JSON.stringify(updatedBookmarks)
+    )
+  }
+
   useEffect(() => {
     fetchHomepageMedia()
+
+    const savedBookmarks =
+      JSON.parse(localStorage.getItem('auroraBookmarks')) || []
+
+    setBookmarks(savedBookmarks)
   }, [])
 
   const renderMediaRow = (title, items) => (
@@ -350,6 +389,12 @@ function App() {
             </button>
           </div>
         </section>
+
+        {bookmarks.length > 0 &&
+          renderMediaRow(
+            'Bookmarked',
+            bookmarks
+          )}
         
         {results.length > 0 && (
           <section className="content-row">
@@ -414,6 +459,16 @@ function App() {
                     ? modalData.title
                     : modalData.name}
                 </h2>
+
+                <button
+                  onClick={() => toggleBookmark(selectedItem)}
+                >
+                  {bookmarks.some(
+                    (bookmark) => bookmark.id === selectedItem.id
+                  )
+                    ? '★ Bookmarked'
+                    : '☆ Bookmark'}
+                </button>
 
                 {modalData.type === 'movie' && (
                   <p>
