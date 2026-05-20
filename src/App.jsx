@@ -360,7 +360,7 @@ function App() {
         <h2>
           Search
         </h2>
-        
+
         <div className="search-bar">
 
         <input
@@ -523,58 +523,200 @@ function App() {
 
         </div>
 
-        {selectedMedia.type ===
-        'tv' && (
+        {selectedMedia.type === 'tv' && (
 
-        <>
+          <div className="tv-browser">
 
-        <h3>
-        Seasons
-        </h3>
+          {/* SEASONS */}
 
-        <div
-        className="season-list"
-        >
+          <div className="season-column">
 
-        {
-        selectedMedia.seasons
-        ?.filter(
-        s=>
-        s.season_number >
-        0
-        )
+          <h3>Seasons</h3>
 
-        .map(
-        season=>(
-        <button
-        key={
-        season.id
-        }
+          <div className="season-list">
 
-        onClick={()=>
-        openSeason(
-        season
-        )
-        }
-        >
-        {
-        season.name
-        }
-        </button>
-        )
-        )
+          {selectedMedia.seasons
+          ?.filter(
+          s =>
+          s.season_number > 0
+          )
 
-        }
+          .map(
+          season => (
 
-        </div>
+          <button
+          key={season.id}
 
-        </>
+          className={
+          currentSeason?.id ===
+          season.id
+          ? 'selected'
+          : ''
+          }
 
-        )}
+          onClick={() =>
+          openSeason(
+          season
+          )
+          }
+          >
+
+          {season.name}
+
+          <span>
+          {
+          season.episode_count
+          }
+          eps
+          </span>
+
+          </button>
+
+          )
+
+          )}
+
+          </div>
+
+          </div>
+
+          {/* EPISODES */}
+
+          <div className="episode-column">
+
+          {currentSeason ? (
+
+          <>
+
+          <h3>
+          {
+          currentSeason.name
+          }
+          </h3>
+
+          <div
+          className="episode-list"
+          >
+
+          {episodes.map(
+          ep => (
+
+          <button
+          key={
+          ep.id
+          }
+
+          className={
+          currentEpisode
+          ?.id ===
+          ep.id
+
+          ? 'selected'
+
+          : ''
+          }
+
+          onClick={() =>
+          openEpisode(
+          ep
+          )
+          }
+          >
+
+          <div>
+
+          Episode
+          {
+          ep.episode_number
+          }
+
+          </div>
+
+          <div>
+
+          {
+          ep.name
+          }
+
+          </div>
+
+          </button>
+
+          )
+
+          )}
+
+          </div>
+
+          </>
+
+          ) : (
+
+          <p>
+
+          Choose a season
+
+          </p>
+
+          )}
+
+          </div>
+
+          </div>
+
+          )}
 
         </section>
 
         )}
+
+        {currentEpisode && (
+
+          <div
+          className="episode-details"
+          >
+
+          <h3>
+
+          Episode
+          {
+          currentEpisode.episode_number
+          }
+
+          :
+          {
+          currentEpisode.name
+          }
+
+          </h3>
+
+          <p>
+
+          {
+          currentEpisode.overview
+          ||
+
+          'No description.'
+
+          }
+
+          </p>
+
+          <button
+          onClick={() =>
+          setIsWatching(
+          true
+          )
+          }
+          >
+
+          Watch Episode
+
+          </button>
+
+          </div>
+
+          )}
 
         {results.length > 0 &&
         renderMediaRow(
