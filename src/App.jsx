@@ -355,292 +355,130 @@ function App() {
         </nav>
       </header>
 
-      <main>
-        <section className="hero">
-          <h2>
-            Search {mediaType === 'movie' ? 'Movies' : 'Shows'}
-          </h2>
+      <main className="home-layout">
 
-          <p>
-            Find your favorite content instantly.
-          </p>
+        {/* TOP SECTION */}
+        <section className="hero-grid">
 
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder={`Search ${
-                mediaType === 'movie'
-                  ? 'movies'
-                  : 'shows'
-              }...`}
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  searchMedia()
+          {/* LEFT */}
+          <div className="search-panel">
+
+            <h2>
+              Search {mediaType === 'movie'
+                ? 'Movies'
+                : 'Shows'}
+            </h2>
+
+            <div className="search-bar">
+
+              <input
+                value={search}
+                placeholder={`Search ${
+                  mediaType === 'movie'
+                    ? 'movies'
+                    : 'shows'
+                }`}
+                onChange={(e) =>
+                  setSearch(e.target.value)
                 }
-              }}
-            />
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter')
+                    searchMedia()
+                }}
+              />
 
-            <button onClick={searchMedia}>
-              Search
-            </button>
+              <button onClick={searchMedia}>
+                Search
+              </button>
+
+            </div>
+
+            <div className="media-switch">
+
+              <button
+                className={
+                  mediaType === 'movie'
+                    ? 'active'
+                    : ''
+                }
+                onClick={() =>
+                  setMediaType('movie')
+                }
+              >
+                Movies
+              </button>
+
+              <button
+                className={
+                  mediaType === 'tv'
+                    ? 'active'
+                    : ''
+                }
+                onClick={() =>
+                  setMediaType('tv')
+                }
+              >
+                Shows
+              </button>
+
+            </div>
+
           </div>
+
+          {/* RIGHT */}
+          <div className="player-panel">
+
+            {!modalView || modalView !== 'watch' ? (
+              <div className="player-placeholder">
+
+                <h3>
+                  Continue Watching
+                </h3>
+
+                <p>
+                  Select something to watch
+                </p>
+
+              </div>
+            ) : (
+              <div className="video-container">
+
+                <iframe
+                  src={
+                    modalData?.type ===
+                    'movie'
+                      ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+                      : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+                  }
+
+                  allowFullScreen
+
+                  referrerPolicy="no-referrer"
+
+                  title="Aurora Player"
+                />
+
+              </div>
+            )}
+
+          </div>
+
         </section>
 
-        {bookmarks.length > 0 &&
+        {/* BOOKMARKS */}
+        {renderMediaRow(
+          'Bookmarks',
+          bookmarks
+        )}
+
+        {/* SEARCH RESULTS */}
+        {results.length > 0 &&
           renderMediaRow(
-            'Bookmarked',
-            bookmarks
+            'Results',
+            results
           )}
-        
-        {results.length > 0 && (
-          <section className="content-row">
-            <h3>Results</h3>
 
-            <div className="card-container">
-              {results.map((item) => {
-                const posterUrl = item.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                  : null
-
-                return (
-                  <div
-                    className="media-card"
-                    key={item.id}
-                    onClick={() => openItem(item)}
-                  >
-                    {posterUrl ? (
-                      <img
-                        src={posterUrl}
-                        alt={item.title || item.name}
-                        className="poster-image"
-                      />
-                    ) : (
-                      <div className="no-image">No Image</div>
-                    )}
-
-                    <div className="media-info">
-                      <p className="media-year">
-                        {(
-                          item.release_date ||
-                          item.first_air_date ||
-                          ''
-                        ).slice(0, 4) || 'Unknown'}
-                      </p>
-
-                      <h4 className="media-title">
-                        {item.title || item.name}
-                      </h4>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* MODAL */}
-        {selectedItem && modalData && (
-          <div
-            className="modal-overlay"
-            onClick={closeModal}
-          >
-            <div
-              className="modal"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* HEADER */}
-              <div className="modal-header">
-                <h2>
-                  {modalData.type === 'movie'
-                    ? modalData.title
-                    : modalData.name}
-                </h2>
-
-                <button
-                  onClick={() => toggleBookmark(selectedItem)}
-                >
-                  {bookmarks.some(
-                    (bookmark) => bookmark.id === selectedItem.id
-                  )
-                    ? '★ Bookmarked'
-                    : '☆ Bookmark'}
-                </button>
-
-                {modalData.type === 'movie' && (
-                  <p>
-                    {modalData.runtime} minutes
-                  </p>
-                )}
-              </div>
-
-              {/* BODY */}
-              <div className="modal-body">
-
-                {/* MOVIE DETAILS */}
-                {modalData.type === 'movie' &&
-                  modalView === 'details' && (
-                    <div>
-                      <p>{modalData.overview}</p>
-                    </div>
-                  )}
-
-                {/* TV SEASONS */}
-                {modalData.type === 'tv' &&
-                  modalView === 'details' && (
-                    <div>
-                      <h3>Seasons</h3>
-
-                      <ul>
-                        {modalData.seasons
-                          .filter((s) => s.season_number > 0)
-                          .map((season) => (
-                            <li key={season.id}>
-                              <button
-                                onClick={() =>
-                                  openSeason(season)
-                                }
-                              >
-                                {season.name} (
-                                {season.episode_count} episodes)
-                              </button>
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  )}
-
-                {/* EPISODES */}
-                {modalView === 'episodes' && (
-                  <div>
-                    <h3>{currentSeason?.name}</h3>
-
-                    <button
-                      onClick={() => {
-                        setModalView('details')
-                        setCurrentSeason(null)
-                        setEpisodes([])
-                      }}
-                      style={{
-                        marginBottom: '20px',
-                      }}
-                    >
-                      ← Back to Seasons
-                    </button>
-
-                    <ul>
-                      {episodes.map((ep) => (
-                        <li key={ep.id}>
-                          <button
-                            onClick={() =>
-                              openEpisode(ep)
-                            }
-                          >
-                            Episode {ep.episode_number}: {ep.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* EPISODE DETAILS */}
-                {modalView === 'episodeDetails' && (
-                  <div>
-                    <button
-                      onClick={() => {
-                        setModalView('episodes')
-                        setCurrentEpisode(null)
-                      }}
-                      style={{
-                        marginBottom: '20px',
-                      }}
-                    >
-                      ← Back to Episodes
-                    </button>
-
-                    <h3>
-                      Episode {currentEpisode?.episode_number}
-                      : {currentEpisode?.name}
-                    </h3>
-
-                    <p>
-                      {currentEpisode?.overview ||
-                        'No description available.'}
-                    </p>
-                  </div>
-                )}
-
-                {/* WATCH VIEW */}
-                {modalView === 'watch' && (
-                  <div className="watch-view">
-                    <div className="video-container">
-                      <iframe
-                        src={
-                          modalData.type === 'movie'
-                            ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                            : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                        }
-                        allowFullScreen
-                        allow="autoplay; fullscreen; encrypted-media"
-                        referrerPolicy="no-referrer"
-                        title="Aurora Player"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* FOOTER */}
-              <div className="modal-footer">
-                <button onClick={closeModal}>
-                  Close
-                </button>
-
-                <div className="modal-actions">
-
-                  {/* WATCH BUTTON */}
-                  {(
-                    modalData.type === 'movie' ||
-                    currentEpisode
-                  ) &&
-                    modalView !== 'watch' && (
-                      <button
-                        onClick={() =>
-                          setModalView('watch')
-                        }
-                      >
-                        Watch
-                      </button>
-                    )}
-
-                  {/* BACK BUTTON */}
-                  {modalView === 'watch' && (
-                    <button
-                      onClick={() => {
-                        if (
-                          modalData.type === 'movie'
-                        ) {
-                          setModalView('details')
-                        } else {
-                          setModalView(
-                            'episodeDetails'
-                          )
-                        }
-                      }}
-                    >
-                      Back
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+        {/* HOME */}
         {renderMediaRow(
           'Trending Movies',
           trendingMovies
@@ -660,6 +498,7 @@ function App() {
           'Popular Shows',
           popularShows
         )}
+
       </main>
     </div>
   )

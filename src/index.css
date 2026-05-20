@@ -462,3 +462,94 @@ input {
 
   flex-shrink: 0;
 }
+
+.home-layout{
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+
+  padding:24px 40px 80px;
+}
+
+.hero-grid{
+  display:grid;
+
+  grid-template-columns:
+    420px
+    1fr;
+
+  gap:24px;
+}
+
+.search-panel{
+  background:#181b22;
+
+  padding:28px;
+
+  border-radius:22px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:18px;
+}
+
+.player-panel{
+  background:#181b22;
+
+  border-radius:22px;
+
+  overflow:hidden;
+
+  min-height:340px;
+
+  display:flex;
+}
+
+.player-placeholder{
+  margin:auto;
+
+  text-align:center;
+
+  color:#9ca3b1;
+}
+
+.player-placeholder h3{
+  margin-bottom:10px;
+}
+
+.media-switch{
+  display:flex;
+
+  gap:10px;
+}
+
+.media-switch button{
+  flex:1;
+}
+
+.video-container{
+  width:100%;
+  height:100%;
+}
+
+.video-container iframe{
+  width:100%;
+
+  height:100%;
+
+  border:none;
+}
+
+@media(max-width:900px){
+
+.hero-grid{
+grid-template-columns:1fr;
+}
+
+.player-panel{
+height:260px;
+}
+
+}
