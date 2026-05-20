@@ -4,9 +4,10 @@ function App() {
   const [search, setSearch] = useState('')
   const [results, setResults] = useState([])
   const [mediaType, setMediaType] = useState('movie')
-  const [selectedItem, setSelectedItem] = useState(null)
-  const [modalData, setModalData] = useState(null)
-  const [modalView, setModalView] = useState('details')
+  
+  const [selectedMedia, setSelectedMedia] = useState(null)
+  const [isWatching, setIsWatching] = useState(false)
+  
   const [currentShow, setCurrentShow] = useState(null)
   const [currentSeason, setCurrentSeason] = useState(null)
   const [currentEpisode, setCurrentEpisode] = useState(null)
@@ -119,59 +120,57 @@ function App() {
     setSearch('')
   }
 
-  const openItem = async (item) => {
-    const token = import.meta.env.VITE_TMDB_API_KEY
+  const openItem = async (
+    item,
+    type =
+      item.title
+        ? 'movie'
+        : 'tv'
+  ) => {
+    const token =
+      import.meta.env
+        .VITE_TMDB_API_KEY
 
-    setSelectedItem(item)
-    setModalData(null)
-
-    setModalView('details')
+    setIsWatching(false)
 
     try {
-      // MOVIE FLOW
-      if (mediaType === 'movie') {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${item.id}`,
+      const endpoint =
+        type === 'movie'
+          ? `movie/${item.id}`
+          : `tv/${item.id}`
+
+      const res =
+        await fetch(
+          `https://api.themoviedb.org/3/${endpoint}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-              accept: 'application/json',
+              Authorization:
+                `Bearer ${token}`,
+              accept:
+                'application/json',
             },
           }
         )
 
-        const data = await res.json()
+      const data =
+        await res.json()
 
-        setModalData({
-          type: 'movie',
-          title: data.title,
-          overview: data.overview,
-          runtime: data.runtime,
-        })
-      }
+      setSelectedMedia({
+        ...data,
+        type,
+      })
 
-      // TV FLOW
-      if (mediaType === 'tv') {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/tv/${item.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              accept: 'application/json',
-            },
-          }
-        )
+      setCurrentShow(
+        type === 'tv'
+          ? data
+          : null
+      )
 
-        const data = await res.json()
+      setCurrentSeason(null)
 
-        setCurrentShow(data)
+      setCurrentEpisode(null)
 
-        setModalData({
-          type: 'tv',
-          name: data.name,
-          seasons: data.seasons,
-        })
-      }
+      setEpisodes([])
     } catch (err) {
       console.error(err)
     }
@@ -356,150 +355,262 @@ function App() {
       </header>
 
       <main className="home-layout">
-
-        {/* TOP SECTION */}
         <section className="hero-grid">
+        <div className="search-panel">
+        <h2>
+          Search
+        </h2>
+        
+        <div className="search-bar">
 
-          {/* LEFT */}
-          <div className="search-panel">
+        <input
+        value={search}
 
-            <h2>
-              Search {mediaType === 'movie'
-                ? 'Movies'
-                : 'Shows'}
-            </h2>
+        placeholder={`Search ${
+        mediaType === 'movie'
+        ? 'movies'
+        : 'shows'
+        }`}
 
-            <div className="search-bar">
+        onChange={(e)=>
+        setSearch(
+        e.target.value
+        )
+        }
 
-              <input
-                value={search}
-                placeholder={`Search ${
-                  mediaType === 'movie'
-                    ? 'movies'
-                    : 'shows'
-                }`}
-                onChange={(e) =>
-                  setSearch(e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter')
-                    searchMedia()
-                }}
-              />
+        onKeyDown={(e)=>{
+        if(e.key==='Enter')
+        searchMedia()
+        }}
+        />
 
-              <button onClick={searchMedia}>
-                Search
-              </button>
+        <button
+        onClick={searchMedia}
+        >
+        Search
+        </button>
 
-            </div>
+        </div>
 
-            <div className="media-switch">
+        <div className="media-switch">
 
-              <button
-                className={
-                  mediaType === 'movie'
-                    ? 'active'
-                    : ''
-                }
-                onClick={() =>
-                  setMediaType('movie')
-                }
-              >
-                Movies
-              </button>
+        <button
+        className={
+        mediaType ===
+        'movie'
+        ? 'active'
+        : ''
+        }
 
-              <button
-                className={
-                  mediaType === 'tv'
-                    ? 'active'
-                    : ''
-                }
-                onClick={() =>
-                  setMediaType('tv')
-                }
-              >
-                Shows
-              </button>
+        onClick={()=>
+        setMediaType(
+        'movie'
+        )
+        }
+        >
+        Movies
+        </button>
 
-            </div>
+        <button
+        className={
+        mediaType ===
+        'tv'
+        ? 'active'
+        : ''
+        }
 
-          </div>
+        onClick={()=>
+        setMediaType(
+        'tv'
+        )
+        }
+        >
+        Shows
+        </button>
 
-          {/* RIGHT */}
-          <div className="player-panel">
+        </div>
 
-            {!modalView || modalView !== 'watch' ? (
-              <div className="player-placeholder">
+        </div>
 
-                <h3>
-                  Continue Watching
-                </h3>
+        <div className="player-panel">
 
-                <p>
-                  Select something to watch
-                </p>
+        {isWatching ? (
 
-              </div>
-            ) : (
-              <div className="video-container">
+        <div className="video-container">
 
-                <iframe
-                  src={
-                    modalData?.type ===
-                    'movie'
-                      ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-                      : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
-                  }
+        <iframe
+        src={
+        selectedMedia?.type ===
+        'movie'
 
-                  allowFullScreen
+        ? `https://vsembed.su/embed/movie/${selectedMedia.id}`
 
-                  referrerPolicy="no-referrer"
+        : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason?.season_number}/${currentEpisode?.episode_number}`
+        }
 
-                  title="Aurora Player"
-                />
+        allowFullScreen
 
-              </div>
-            )}
+        allow="autoplay; fullscreen"
 
-          </div>
+        referrerPolicy="no-referrer"
+
+        title="Aurora Player"
+        />
+
+        </div>
+
+        ) : (
+
+        <div className="player-placeholder">
+
+        <h3>
+        Continue Watching
+        </h3>
+
+        <p>
+        Select media
+        to begin
+        </p>
+
+        </div>
+
+        )}
+
+        </div>
 
         </section>
 
-        {/* BOOKMARKS */}
-        {renderMediaRow(
-          'Bookmarks',
-          bookmarks
+        {selectedMedia && (
+
+        <section
+        className="details-panel"
+        >
+
+        <h2>
+        {
+        selectedMedia.title ||
+        selectedMedia.name
+        }
+        </h2>
+
+        {selectedMedia.overview && (
+        <p>
+        {
+        selectedMedia.overview
+        }
+        </p>
         )}
 
-        {/* SEARCH RESULTS */}
+        <div
+        className="details-actions"
+        >
+
+        <button
+        onClick={()=>
+        setIsWatching(
+        true
+        )
+        }
+        >
+        Watch
+        </button>
+
+        <button>
+
+        ⭐ Bookmark
+
+        </button>
+
+        </div>
+
+        {selectedMedia.type ===
+        'tv' && (
+
+        <>
+
+        <h3>
+        Seasons
+        </h3>
+
+        <div
+        className="season-list"
+        >
+
+        {
+        selectedMedia.seasons
+        ?.filter(
+        s=>
+        s.season_number >
+        0
+        )
+
+        .map(
+        season=>(
+        <button
+        key={
+        season.id
+        }
+
+        onClick={()=>
+        openSeason(
+        season
+        )
+        }
+        >
+        {
+        season.name
+        }
+        </button>
+        )
+        )
+
+        }
+
+        </div>
+
+        </>
+
+        )}
+
+        </section>
+
+        )}
+
         {results.length > 0 &&
-          renderMediaRow(
-            'Results',
-            results
-          )}
-
-        {/* HOME */}
-        {renderMediaRow(
-          'Trending Movies',
-          trendingMovies
+        renderMediaRow(
+        'Results',
+        results
         )}
 
-        {renderMediaRow(
-          'Trending Shows',
-          trendingShows
-        )}
+        {
+        renderMediaRow(
+        'Trending Movies',
+        trendingMovies
+        )
+        }
 
-        {renderMediaRow(
-          'Popular Movies',
-          popularMovies
-        )}
+        {
+        renderMediaRow(
+        'Trending Shows',
+        trendingShows
+        )
+        }
 
-        {renderMediaRow(
-          'Popular Shows',
-          popularShows
-        )}
+        {
+        renderMediaRow(
+        'Popular Movies',
+        popularMovies
+        )
+        }
 
-      </main>
+        {
+        renderMediaRow(
+        'Popular Shows',
+        popularShows
+        )
+        }
+
+        </main>
     </div>
   )
 }

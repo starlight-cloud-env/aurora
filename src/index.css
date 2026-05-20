@@ -464,92 +464,86 @@ input {
 }
 
 .home-layout{
-  display:flex;
-  flex-direction:column;
-  gap:32px;
+padding:24px;
 
-  padding:24px 40px 80px;
+display:flex;
+
+flex-direction:column;
+
+gap:32px;
 }
 
 .hero-grid{
-  display:grid;
+display:grid;
 
-  grid-template-columns:
-    420px
-    1fr;
+grid-template-columns:
+420px
+1fr;
 
-  gap:24px;
+gap:24px;
 }
 
-.search-panel{
-  background:#181b22;
+.search-panel,
+.player-panel,
+.details-panel{
 
-  padding:28px;
+background:#171c24;
 
-  border-radius:22px;
+border-radius:22px;
 
-  display:flex;
-
-  flex-direction:column;
-
-  gap:18px;
+padding:24px;
 }
 
 .player-panel{
-  background:#181b22;
-
-  border-radius:22px;
-
-  overflow:hidden;
-
-  min-height:340px;
-
-  display:flex;
+height:340px;
 }
 
 .player-placeholder{
-  margin:auto;
 
-  text-align:center;
+height:100%;
 
-  color:#9ca3b1;
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+color:#9aa4b2;
 }
 
-.player-placeholder h3{
-  margin-bottom:10px;
+.details-panel{
+display:flex;
+
+flex-direction:column;
+
+gap:16px;
 }
 
-.media-switch{
-  display:flex;
+.details-actions{
+display:flex;
 
-  gap:10px;
+gap:12px;
 }
 
-.media-switch button{
-  flex:1;
+.season-list{
+
+display:flex;
+
+gap:10px;
+
+overflow:auto;
 }
 
-.video-container{
-  width:100%;
-  height:100%;
-}
-
-.video-container iframe{
-  width:100%;
-
-  height:100%;
-
-  border:none;
-}
-
-@media(max-width:900px){
+@media
+(max-width:900px){
 
 .hero-grid{
-grid-template-columns:1fr;
-}
 
-.player-panel{
-height:260px;
+grid-template-columns:
+1fr;
+
 }
 
 }
