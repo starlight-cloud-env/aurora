@@ -25,3 +25,5 @@ export default function Hero(
     </section>
   )
 }
+
+export default Hero

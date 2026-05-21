@@ -10,3 +10,5 @@ export default function BookmarkRow(
     />
   )
 }
+
+export default BookmarkRow

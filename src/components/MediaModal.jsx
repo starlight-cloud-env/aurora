@@ -106,3 +106,5 @@ export default function MediaModal(
     </div>
   )
 }
+
+export default MediaModal

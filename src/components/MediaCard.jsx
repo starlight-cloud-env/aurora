@@ -46,3 +46,5 @@ export default function MediaCard({
     </div>
   )
 }
+
+export default MediaCard
