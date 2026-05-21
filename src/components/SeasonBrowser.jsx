@@ -1,4 +1,4 @@
-export default function SeasonBrowser({
+function SeasonBrowser({
   seasons,
   openSeason,
 }) {

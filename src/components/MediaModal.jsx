@@ -1,7 +1,7 @@
 import SeasonBrowser from './SeasonBrowser'
 import VideoPlayer from './VideoPlayer'
 
-export default function MediaModal(
+function MediaModal(
   props
 ) {
   if (

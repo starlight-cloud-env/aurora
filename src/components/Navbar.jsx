@@ -1,4 +1,4 @@
-export default function Navbar({
+function Navbar({
   mediaType,
   setMediaType,
   goHome,

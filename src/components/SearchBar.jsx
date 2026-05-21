@@ -1,4 +1,4 @@
-export default function SearchBar({
+function SearchBar({
   search,
   setSearch,
   searchMedia,

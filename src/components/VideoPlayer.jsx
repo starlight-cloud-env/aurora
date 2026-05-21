@@ -1,4 +1,4 @@
-export default function VideoPlayer({
+function VideoPlayer({
   modalData,
   selectedItem,
   currentShow,

@@ -1,4 +1,4 @@
-export default function MediaCard({
+function MediaCard({
   item,
   onClick,
 }) {

@@ -1,6 +1,6 @@
 import MediaCard from './MediaCard'
 
-export default function MediaRow({
+function MediaRow({
   title,
   items,
   openItem,

@@ -1,6 +1,6 @@
 import SearchBar from './SearchBar'
 
-export default function Hero(
+function Hero(
   props
 ) {
   return (

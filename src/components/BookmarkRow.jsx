@@ -1,6 +1,6 @@
 import MediaRow from './MediaRow'
 
-export default function BookmarkRow(
+function BookmarkRow(
   props
 ) {
   return (
