@@ -1,106 +1,42 @@
-import SeasonBrowser from './SeasonBrowser'
-import VideoPlayer from './VideoPlayer'
-
-function MediaModal(
-  props
-) {
-  if (
-    !props.selectedItem ||
-    !props.modalData
-  )
+const MediaModal = ({
+  selectedItem,
+  closeItem,
+  toggleBookmark,
+  isBookmarked,
+}) => {
+  if (!selectedItem) {
     return null
+  }
+
+  const title = selectedItem.title || selectedItem.name
+  const bookmarked = isBookmarked(selectedItem.id)
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={
-        props.closeModal
-      }
-    >
-      <div
-        className="modal"
-        onClick={(e) =>
-          e.stopPropagation()
-        }
-      >
+    <div className="modal-overlay" onClick={closeItem}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            {props
-              .modalData
-              .title ||
-              props
-                .modalData
-                .name}
-          </h2>
-
-          <button
-            onClick={() =>
-              props.toggleBookmark(
-                props.selectedItem
-              )
-            }
-          >
-            {props.isBookmarked(
-              props
-                .selectedItem
-                .id
-            )
-              ? '★'
-              : '☆'}
-          </button>
+          <h2>{title}</h2>
+          <button onClick={closeItem}>✕</button>
         </div>
 
         <div className="modal-body">
-          {props.modalView ===
-            'details' &&
-            props
-              .modalData
-              .overview}
+          {selectedItem.overview && <p>{selectedItem.overview}</p>}
 
-          {props
-            .modalData
-            .type ===
-            'tv' &&
-            props.modalView ===
-              'details' && (
-              <SeasonBrowser
-                seasons={
-                  props
-                    .modalData
-                    .seasons
-                }
-                openSeason={
-                  props.openSeason
-                }
-              />
-            )}
-
-          {props.modalView ===
-            'watch' && (
-            <VideoPlayer
-              {...props}
-            />
+          {selectedItem.number_of_seasons && (
+            <div className="mt-6">
+              <h3>Seasons: {selectedItem.number_of_seasons}</h3>
+            </div>
           )}
         </div>
 
         <div className="modal-footer">
           <button
-            onClick={
-              props.closeModal
-            }
+            className={`modal-button ${bookmarked ? 'bookmarked' : ''}`}
+            onClick={() => toggleBookmark(selectedItem)}
           >
-            Close
+            {bookmarked ? '★ Bookmarked' : '☆ Add Bookmark'}
           </button>
-
-          <button
-            onClick={() =>
-              props.setModalView(
-                'watch'
-              )
-            }
-          >
-            Watch
-          </button>
+          <button onClick={closeItem}>Close</button>
         </div>
       </div>
     </div>

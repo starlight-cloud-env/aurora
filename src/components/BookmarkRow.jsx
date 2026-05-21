@@ -1,14 +1,11 @@
 import MediaRow from './MediaRow'
 
-function BookmarkRow(
-  props
-) {
-  return (
-    <MediaRow
-      title="Bookmarked"
-      {...props}
-    />
-  )
+const BookmarkRow = ({ items, openItem }) => {
+  if (!items || items.length === 0) {
+    return null
+  }
+
+  return <MediaRow title="My Bookmarks" items={items} openItem={openItem} />
 }
 
 export default BookmarkRow

@@ -1,61 +1,30 @@
-import { useEffect, useState } from 'react'
-import {
-  getBookmarks,
-  saveBookmarks,
-} from '../utils/storage'
+import { useState, useEffect } from 'react'
 
-const STORAGE_KEY = 'auroraBookmarks'
-
-export default function useBookmarks() {
+const useBookmarks = () => {
   const [bookmarks, setBookmarks] = useState([])
 
+  // Load bookmarks from localStorage on mount
   useEffect(() => {
-    const saved =
-      JSON.parse(
-        getBookmarks(STORAGE_KEY)
-      ) || []
-
-    setBookmarks(saved)
+    const saved = localStorage.getItem('bookmarks')
+    if (saved) {
+      setBookmarks(JSON.parse(saved))
+    }
   }, [])
 
   const toggleBookmark = (item) => {
-    const exists = bookmarks.some(
-      (bookmark) => bookmark.id === item.id
-    )
-
-    let updated
-
-    if (exists) {
-      updated = bookmarks.filter(
-        (bookmark) => bookmark.id !== item.id
-      )
-    } else {
-      updated = [
-        ...bookmarks,
-        {
-          id: item.id,
-          title: item.title,
-          name: item.name,
-          poster_path: item.poster_path,
-          release_date: item.release_date,
-          first_air_date:
-            item.first_air_date,
-        },
-      ]
-    }
-
-    setBookmarks(updated)
-
-    saveBookmarks(
-      STORAGE_KEY,
-      JSON.stringify(updated)
-    )
+    setBookmarks((prev) => {
+      const exists = prev.some((b) => b.id === item.id)
+      const updated = exists
+        ? prev.filter((b) => b.id !== item.id)
+        : [...prev, item]
+      localStorage.setItem('bookmarks', JSON.stringify(updated))
+      return updated
+    })
   }
 
-  const isBookmarked = (id) =>
-    bookmarks.some(
-      (bookmark) => bookmark.id === id
-    )
+  const isBookmarked = (itemId) => {
+    return bookmarks.some((b) => b.id === itemId)
+  }
 
   return {
     bookmarks,
@@ -63,3 +32,5 @@ export default function useBookmarks() {
     isBookmarked,
   }
 }
+
+export default useBookmarks
