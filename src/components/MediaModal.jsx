@@ -10,6 +10,8 @@ const MediaModal = ({
 
   const title = selectedItem.title || selectedItem.name
   const bookmarked = isBookmarked(selectedItem.id)
+  const isMovie = !!selectedItem.title
+  const vidsrcId = selectedItem.id
 
   return (
     <div className="modal-overlay" onClick={closeItem}>
@@ -20,10 +22,28 @@ const MediaModal = ({
         </div>
 
         <div className="modal-body">
-          {selectedItem.overview && <p>{selectedItem.overview}</p>}
+          {isMovie ? (
+            <div className="video-container">
+              <iframe
+                src={`https://vidsrc.me/embed/movie/${vidsrcId}`}
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="video-container">
+              <iframe
+                src={`https://vidsrc.me/embed/tv/${vidsrcId}/1/1`}
+                allowFullScreen
+              />
+            </div>
+          )}
+
+          <div style={{ marginTop: '20px' }}>
+            {selectedItem.overview && <p>{selectedItem.overview}</p>}
+          </div>
 
           {selectedItem.number_of_seasons && (
-            <div className="mt-6">
+            <div className="season-list" style={{ marginTop: '20px' }}>
               <h3>Seasons: {selectedItem.number_of_seasons}</h3>
             </div>
           )}

@@ -5,9 +5,13 @@ const useBookmarks = () => {
 
   // Load bookmarks from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('bookmarks')
+    const saved = localStorage.getItem('aurora_bookmarks')
     if (saved) {
-      setBookmarks(JSON.parse(saved))
+      try {
+        setBookmarks(JSON.parse(saved))
+      } catch (error) {
+        console.error('Error parsing bookmarks:', error)
+      }
     }
   }, [])
 
@@ -17,7 +21,7 @@ const useBookmarks = () => {
       const updated = exists
         ? prev.filter((b) => b.id !== item.id)
         : [...prev, item]
-      localStorage.setItem('bookmarks', JSON.stringify(updated))
+      localStorage.setItem('aurora_bookmarks', JSON.stringify(updated))
       return updated
     })
   }
