@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
+
 import {
   searchMedia as searchTMDB,
   getHomepageMedia,
+  fetchShow,
+  fetchSeason,
 } from '../services/tmdb'
 
 const useMedia = () => {
@@ -16,6 +19,18 @@ const useMedia = () => {
 
   const [selectedItem, setSelectedItem] =
     useState(null)
+
+  const [currentShow, setCurrentShow] =
+    useState(null)
+
+  const [currentSeason, setCurrentSeason] =
+    useState(null)
+
+  const [currentEpisode, setCurrentEpisode] =
+    useState(null)
+
+  const [episodes, setEpisodes] =
+    useState([])
 
   const [trendingMovies, setTrendingMovies] =
     useState([])
@@ -58,11 +73,6 @@ const useMedia = () => {
       setPopularShows(
         data.popularShows
       )
-    } catch (err) {
-      console.error(
-        'Homepage load failed:',
-        err
-      )
     } finally {
       setLoading(false)
     }
@@ -83,26 +93,76 @@ const useMedia = () => {
       setResults(
         data.results || []
       )
-    } catch (err) {
-      console.error(
-        'Search failed:',
-        err
-      )
     } finally {
       setLoading(false)
     }
   }
 
-  const openItem = (item) =>
+  const openItem = async (item) => {
     setSelectedItem(item)
 
-  const closeItem = () =>
+    if (item.name) {
+      const show =
+        await fetchShow(
+          item.id
+        )
+
+      setCurrentShow(show)
+
+      setCurrentSeason(null)
+      setCurrentEpisode(null)
+      setEpisodes([])
+    }
+  }
+
+  const openSeason = async (
+    season
+  ) => {
+    try {
+      const data =
+        await fetchSeason(
+          currentShow.id,
+          season.season_number
+        )
+
+      setCurrentSeason(season)
+
+      setEpisodes(
+        data.episodes || []
+      )
+
+      setCurrentEpisode(null)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const openEpisode = (
+    episode
+  ) => {
+    setCurrentEpisode(
+      episode
+    )
+  }
+
+  const closeItem = () => {
     setSelectedItem(null)
+
+    setCurrentShow(null)
+
+    setCurrentSeason(null)
+
+    setCurrentEpisode(null)
+
+    setEpisodes([])
+  }
 
   const goHome = () => {
     setSearch('')
+
     setResults([])
-    setSelectedItem(null)
+
+    closeItem()
   }
 
   return {
@@ -116,6 +176,12 @@ const useMedia = () => {
 
     selectedItem,
 
+    currentShow,
+    currentSeason,
+    currentEpisode,
+
+    episodes,
+
     trendingMovies,
     trendingShows,
 
@@ -125,6 +191,9 @@ const useMedia = () => {
     searchMedia,
 
     openItem,
+    openSeason,
+    openEpisode,
+
     closeItem,
 
     goHome,
