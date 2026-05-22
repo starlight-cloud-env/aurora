@@ -99,19 +99,17 @@ const useMedia = () => {
   }
 
   const openItem = async (item) => {
+    console.log('OPEN', item)
+
     setSelectedItem(item)
 
     if (item.name) {
       const show =
-        await fetchShow(
-          item.id
-        )
+        await fetchShow(item.id)
+
+      console.log('SHOW', show)
 
       setCurrentShow(show)
-
-      setCurrentSeason(null)
-      setCurrentEpisode(null)
-      setEpisodes([])
     }
   }
 
