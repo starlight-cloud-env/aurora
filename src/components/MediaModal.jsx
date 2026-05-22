@@ -2,7 +2,6 @@ import SeasonBrowser from './SeasonBrowser'
 import VideoPlayer from './VideoPlayer'
 
 function MediaModal({
-  modalData,
   selectedItem,
   currentShow,
   currentSeason,
