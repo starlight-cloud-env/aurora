@@ -8,6 +8,8 @@ function MediaModal({
   currentSeason,
   currentEpisode,
 
+  episodes,
+
   openSeason,
   openEpisode,
 
