@@ -59,6 +59,21 @@ function MediaModal({
 
           {isShow && (
             <>
+              {currentEpisode && (
+                <VideoPlayer
+                  type="tv"
+                  showId={
+                    currentShow.id
+                  }
+                  season={
+                    currentSeason.season_number
+                  }
+                  episode={
+                    currentEpisode.episode_number
+                  }
+                />
+              )}
+
               <SeasonBrowser
                 currentShow={
                   currentShow
@@ -79,21 +94,6 @@ function MediaModal({
                   openEpisode
                 }
               />
-
-              {currentEpisode && (
-                <VideoPlayer
-                  type="tv"
-                  showId={
-                    currentShow.id
-                  }
-                  season={
-                    currentSeason.season_number
-                  }
-                  episode={
-                    currentEpisode.episode_number
-                  }
-                />
-              )}
             </>
           )}
 
