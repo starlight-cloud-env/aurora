@@ -1,62 +1,108 @@
-const MediaModal = ({
-  selectedItem,
-  closeItem,
-  toggleBookmark,
-  isBookmarked,
-}) => {
-  if (!selectedItem) {
-    return null
-  }
+import SeasonBrowser from './SeasonBrowser'
+import VideoPlayer from './VideoPlayer'
 
-  const title = selectedItem.title || selectedItem.name
-  const bookmarked = isBookmarked(selectedItem.id)
-  const isMovie = !!selectedItem.title
-  const vidsrcId = selectedItem.id
+function MediaModal({
+  selectedItem,
+  currentShow,
+  currentSeason,
+  currentEpisode,
+  episodes,
+
+  openSeason,
+  openEpisode,
+
+  closeItem,
+}) {
+  if (!selectedItem)
+    return null
+
+  const isShow =
+    !!selectedItem.name
 
   return (
-    <div className="modal-overlay" onClick={closeItem}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="modal-overlay"
+      onClick={closeItem}
+    >
+      <div
+        className="modal"
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+      >
         <div className="modal-header">
-          <h2>{title}</h2>
-          <button onClick={closeItem}>✕</button>
+          <h2>
+            {
+              selectedItem.title ||
+              selectedItem.name
+            }
+          </h2>
         </div>
 
         <div className="modal-body">
-          {isMovie ? (
-            <div className="video-container">
-              <iframe
-                src={`https://vidsrc.me/embed/movie/${vidsrcId}`}
-                allowFullScreen
+
+          {/* SHOW FLOW */}
+
+          {isShow && (
+            <>
+              <SeasonBrowser
+                currentShow={
+                  currentShow
+                }
+                currentSeason={
+                  currentSeason
+                }
+                currentEpisode={
+                  currentEpisode
+                }
+                episodes={
+                  episodes
+                }
+                openSeason={
+                  openSeason
+                }
+                openEpisode={
+                  openEpisode
+                }
               />
-            </div>
-          ) : (
-            <div className="video-container">
-              <iframe
-                src={`https://vidsrc.me/embed/tv/${vidsrcId}/1/1`}
-                allowFullScreen
-              />
-            </div>
+
+              {currentEpisode && (
+                <VideoPlayer
+                  type="tv"
+                  showId={
+                    currentShow.id
+                  }
+                  season={
+                    currentSeason.season_number
+                  }
+                  episode={
+                    currentEpisode.episode_number
+                  }
+                />
+              )}
+            </>
           )}
 
-          <div style={{ marginTop: '20px' }}>
-            {selectedItem.overview && <p>{selectedItem.overview}</p>}
-          </div>
+          {/* MOVIE FLOW */}
 
-          {selectedItem.number_of_seasons && (
-            <div className="season-list" style={{ marginTop: '20px' }}>
-              <h3>Seasons: {selectedItem.number_of_seasons}</h3>
-            </div>
+          {!isShow && (
+            <VideoPlayer
+              type="movie"
+              movieId={
+                selectedItem.id
+              }
+            />
           )}
         </div>
 
         <div className="modal-footer">
           <button
-            className={`modal-button ${bookmarked ? 'bookmarked' : ''}`}
-            onClick={() => toggleBookmark(selectedItem)}
+            onClick={
+              closeItem
+            }
           >
-            {bookmarked ? '★ Bookmarked' : '☆ Add Bookmark'}
+            Close
           </button>
-          <button onClick={closeItem}>Close</button>
         </div>
       </div>
     </div>

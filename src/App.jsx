@@ -76,15 +76,21 @@ function App() {
       </main>
 
       <MediaModal
-        {...media}
+        selectedItem={selectedItem}
 
-        toggleBookmark={
-          toggleBookmark
-        }
+        currentShow={currentShow}
 
-        isBookmarked={
-          isBookmarked
-        }
+        currentSeason={currentSeason}
+
+        currentEpisode={currentEpisode}
+
+        episodes={episodes}
+
+        openSeason={openSeason}
+
+        openEpisode={openEpisode}
+
+        closeItem={closeItem}
       />
 
     </div>
