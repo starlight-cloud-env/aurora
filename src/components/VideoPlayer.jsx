@@ -5,11 +5,19 @@ function VideoPlayer({
   currentSeason,
   currentEpisode,
 }) {
-  const src =
-    modalData.type ===
-    'movie'
+  const isMovie = modalData?.type === 'movie'
+
+  const src = isMovie
+    ? selectedItem?.id
       ? `https://vsembed.su/embed/movie/${selectedItem.id}`
-      : `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+      : null
+    : currentShow?.id &&
+      currentSeason?.season_number &&
+      currentEpisode?.episode_number
+      ? `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+      : null
+
+  if (!src) return null
 
   return (
     <div className="video-container">
