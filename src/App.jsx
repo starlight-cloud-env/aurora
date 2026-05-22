@@ -11,6 +11,7 @@ import BookmarkRow from './components/BookmarkRow'
 
 function App() {
   const {
+    media,
     mediaType,
     setMediaType,
 
