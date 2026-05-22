@@ -7,7 +7,11 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import MediaRow from './components/MediaRow'
 import MediaModal from './components/MediaModal'
+import MediaCard from './components/MediaCard'
 import BookmarkRow from './components/BookmarkRow'
+import SearchBar from './components/SearchBar'
+import SeasonBrowser from './components/SeasonBrowser'
+import VideoPlayer from './components/VideoPlayer'
 
 function App() {
   const {
