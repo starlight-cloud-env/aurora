@@ -56,55 +56,55 @@ function App() {
     <div className="app">
 
       <Navbar
-        mediaType={media.mediaType}
-        setMediaType={media.setMediaType}
-        goHome={media.goHome}
+        mediaType={mediaType}
+        setMediaType={setMediaType}
+        goHome={goHome}
       />
 
       <main>
 
         <Hero
           search={media.search}
-          setSearch={media.setSearch}
-          searchMedia={media.searchMedia}
-          mediaType={media.mediaType}
+          setSearch={setSearch}
+          searchMedia={searchMedia}
+          mediaType={mediaType}
         />
 
         <BookmarkRow
           items={bookmarks}
-          openItem={media.openItem}
+          openItem={openItem}
         />
 
-        {!!media.results.length && (
+        {!!results.length && (
           <MediaRow
             title="Results"
-            items={media.results}
-            openItem={media.openItem}
+            items={results}
+            openItem={openItem}
           />
         )}
 
         <MediaRow
           title="Trending Movies"
-          items={media.trendingMovies}
-          openItem={media.openItem}
+          items={trendingMovies}
+          openItem={openItem}
         />
 
         <MediaRow
           title="Trending Shows"
-          items={media.trendingShows}
-          openItem={media.openItem}
+          items={trendingShows}
+          openItem={openItem}
         />
 
         <MediaRow
           title="Popular Movies"
-          items={media.popularMovies}
-          openItem={media.openItem}
+          items={popularMovies}
+          openItem={openItem}
         />
 
         <MediaRow
           title="Popular Shows"
-          items={media.popularShows}
-          openItem={media.openItem}
+          items={popularShows}
+          openItem={openItem}
         />
 
       </main>
