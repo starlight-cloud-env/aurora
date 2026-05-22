@@ -80,7 +80,9 @@ const useMedia = () => {
           mediaType
         )
 
-      setResults(data)
+      setResults(
+        data.results || []
+      )
     } catch (err) {
       console.error(
         'Search failed:',
