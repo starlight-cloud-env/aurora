@@ -9,12 +9,12 @@ function VideoPlayer({
 
   const src = isMovie
     ? movieId
-      ? `https://vsembed.su/embed/movie/${movieId}`
+      ? `https://vidsrc-embed.ru/embed/movie/${movieId}`
       : null
     : showId &&
       season &&
       episode
-      ? `https://vsembed.su/embed/tv/${showId}/${season}/${episode}`
+      ? `https://vidsrc-embed.ru/embed/tv/${showId}/${season}/${episode}`
       : null
 
   if (!src) return null
