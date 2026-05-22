@@ -10,7 +10,41 @@ import MediaModal from './components/MediaModal'
 import BookmarkRow from './components/BookmarkRow'
 
 function App() {
-  const media = useMedia()
+  const {
+    mediaType,
+    setMediaType,
+
+    search,
+    setSearch,
+
+    results,
+
+    selectedItem,
+
+    currentShow,
+    currentSeason,
+    currentEpisode,
+
+    episodes,
+
+    trendingMovies,
+    trendingShows,
+
+    popularMovies,
+    popularShows,
+
+    searchMedia,
+
+    openItem,
+    openSeason,
+    openEpisode,
+
+    closeItem,
+
+    goHome,
+
+    loading,
+  } = useMedia()
 
   const {
     bookmarks,
@@ -77,19 +111,12 @@ function App() {
 
       <MediaModal
         selectedItem={selectedItem}
-
         currentShow={currentShow}
-
         currentSeason={currentSeason}
-
         currentEpisode={currentEpisode}
-
         episodes={episodes}
-
         openSeason={openSeason}
-
         openEpisode={openEpisode}
-
         closeItem={closeItem}
       />
 
