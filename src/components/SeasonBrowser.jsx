@@ -43,7 +43,7 @@ function SeasonBrowser({
                   }
                 >
                   {season.name}
-
+                  {' - '}
                   <span>
                     {
                       season.episode_count
