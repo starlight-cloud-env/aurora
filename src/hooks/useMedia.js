@@ -1,142 +1,132 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  searchMedia as searchTMDB,
+  getHomepageMedia,
+} from '../services/tmdb'
 
 const useMedia = () => {
-  const [mediaType, setMediaType] = useState('movie')
-  const [search, setSearch] = useState('')
-  const [results, setResults] = useState([])
-  const [selectedItem, setSelectedItem] = useState(null)
-  const [trendingMovies, setTrendingMovies] = useState([])
-  const [trendingShows, setTrendingShows] = useState([])
-  const [popularMovies, setPopularMovies] = useState([])
-  const [popularShows, setPopularShows] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [mediaType, setMediaType] =
+    useState('movie')
 
-  const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY
-  const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
+  const [search, setSearch] =
+    useState('')
 
-  // Fetch trending movies
+  const [results, setResults] =
+    useState([])
+
+  const [selectedItem, setSelectedItem] =
+    useState(null)
+
+  const [trendingMovies, setTrendingMovies] =
+    useState([])
+
+  const [trendingShows, setTrendingShows] =
+    useState([])
+
+  const [popularMovies, setPopularMovies] =
+    useState([])
+
+  const [popularShows, setPopularShows] =
+    useState([])
+
+  const [loading, setLoading] =
+    useState(false)
+
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      try {
-        const response = await fetch(
-          `${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}`
-        )
-        const data = await response.json()
-        setTrendingMovies(data.results || [])
-      } catch (error) {
-        console.error('Error fetching trending movies:', error)
-      }
-    }
-    fetchTrendingMovies()
+    loadHomepage()
   }, [])
 
-  // Fetch trending shows
-  useEffect(() => {
-    const fetchTrendingShows = async () => {
-      try {
-        const response = await fetch(
-          `${TMDB_BASE_URL}/trending/tv/week?api_key=${TMDB_API_KEY}`
-        )
-        const data = await response.json()
-        setTrendingShows(data.results || [])
-      } catch (error) {
-        console.error('Error fetching trending shows:', error)
-      }
-    }
-    fetchTrendingShows()
-  }, [])
-
-  // Fetch popular movies
-  useEffect(() => {
-    const fetchPopularMovies = async () => {
-      try {
-        const response = await fetch(
-          `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}`
-        )
-        const data = await response.json()
-        setPopularMovies(data.results || [])
-      } catch (error) {
-        console.error('Error fetching popular movies:', error)
-      }
-    }
-    fetchPopularMovies()
-  }, [])
-
-  // Fetch popular shows
-  useEffect(() => {
-    const fetchPopularShows = async () => {
-      try {
-        const response = await fetch(
-          `${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}`
-        )
-        const data = await response.json()
-        setPopularShows(data.results || [])
-      } catch (error) {
-        console.error('Error fetching popular shows:', error)
-      }
-    }
-    fetchPopularShows()
-  }, [])
-
-  const searchMedia = async () => {
-    if (!search.trim()) return
-
-    setLoading(true)
+  const loadHomepage = async () => {
     try {
-      const endpoint =
-        mediaType === 'movie' ? 'search/movie' : 'search/tv'
-      const response = await fetch(
-        `${TMDB_BASE_URL}/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
-          search
-        )}`
+      setLoading(true)
+
+      const data =
+        await getHomepageMedia()
+
+      setTrendingMovies(
+        data.trendingMovies
       )
-      const data = await response.json()
-      setResults(data.results || [])
-    } catch (error) {
-      console.error('Error searching media:', error)
+
+      setTrendingShows(
+        data.trendingShows
+      )
+
+      setPopularMovies(
+        data.popularMovies
+      )
+
+      setPopularShows(
+        data.popularShows
+      )
+    } catch (err) {
+      console.error(
+        'Homepage load failed:',
+        err
+      )
     } finally {
       setLoading(false)
     }
   }
 
-  const openItem = (item) => {
-    setSelectedItem(item)
+  const searchMedia = async () => {
+    if (!search.trim()) return
+
+    try {
+      setLoading(true)
+
+      const data =
+        await searchTMDB(
+          search,
+          mediaType
+        )
+
+      setResults(data)
+    } catch (err) {
+      console.error(
+        'Search failed:',
+        err
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const closeItem = () => {
+  const openItem = (item) =>
+    setSelectedItem(item)
+
+  const closeItem = () =>
     setSelectedItem(null)
-  }
 
   const goHome = () => {
     setSearch('')
     setResults([])
     setSelectedItem(null)
-    setMediaType('movie')
   }
-
-  console.log({
-    results,
-    trendingMovies,
-    trendingShows,
-    popularMovies,
-    popularShows,
-  })
 
   return {
     mediaType,
     setMediaType,
+
     search,
     setSearch,
+
     results,
+
     selectedItem,
+
     trendingMovies,
     trendingShows,
+
     popularMovies,
     popularShows,
+
     searchMedia,
+
     openItem,
     closeItem,
+
     goHome,
+
     loading,
   }
 }
