@@ -13,12 +13,16 @@ function MediaModal({
   openEpisode,
 
   closeItem,
+  toggleBookmark,
+  isBookmarked,
 }) {
   if (!selectedItem)
     return null
 
   const isShow =
     !!selectedItem.name
+
+  const bookmarked = isBookmarked(selectedItem.id)
 
   return (
     <div
@@ -38,6 +42,15 @@ function MediaModal({
               selectedItem.name
             }
           </h2>
+          <button
+            className={`bookmark-btn ${bookmarked ? 'bookmarked' : ''}`}
+            onClick={() =>
+              toggleBookmark(selectedItem)
+            }
+            title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
+          >
+            {bookmarked ? '★' : '☆'}
+          </button>
         </div>
 
         <div className="modal-body">
