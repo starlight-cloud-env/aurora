@@ -114,6 +114,14 @@ const useMedia = () => {
     setMediaType('movie')
   }
 
+  console.log({
+    results,
+    trendingMovies,
+    trendingShows,
+    popularMovies,
+    popularShows,
+  })
+
   return {
     mediaType,
     setMediaType,
