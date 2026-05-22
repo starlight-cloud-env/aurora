@@ -15,6 +15,11 @@ async function fetchTMDB(path) {
   )
 
   if (!res.ok) {
+    const text =
+      await res.text()
+
+    console.error(text)
+
     throw new Error(
       `TMDB Error ${res.status}`
     )
@@ -39,7 +44,7 @@ export async function searchMedia(
   )
 }
 
-export async function fetchHomepageMedia() {
+export async function getHomepageMedia() {
   const [
     trendingMovies,
     trendingShows,
