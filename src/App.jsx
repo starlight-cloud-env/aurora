@@ -118,6 +118,8 @@ function App() {
         openSeason={openSeason}
         openEpisode={openEpisode}
         closeItem={closeItem}
+        toggleBookmark={toggleBookmark}
+        isBookmarked={isBookmarked}
       />
 
     </div>
