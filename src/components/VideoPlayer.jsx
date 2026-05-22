@@ -9,12 +9,12 @@ function VideoPlayer({
 
   const src = isMovie
     ? movieId
-      ? `https://vidsrc-embed.ru/embed/movie/${movieId}`
+      ? `https://vidsrcme.ru/embed/movie/${movieId}`
       : null
     : showId &&
       season &&
       episode
-      ? `https://vidsrc-embed.ru/embed/tv/${showId}/${season}/${episode}`
+      ? `https://vidsrcme.ru/embed/tv/${showId}/${season}/${episode}`
       : null
 
   if (!src) return null
@@ -30,5 +30,7 @@ function VideoPlayer({
     </div>
   )
 }
+
+// https://vidsrc.domains/
 
 export default VideoPlayer
