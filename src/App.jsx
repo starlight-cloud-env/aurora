@@ -64,7 +64,7 @@ function App() {
       <main>
 
         <Hero
-          search={media.search}
+          search={search}
           setSearch={setSearch}
           searchMedia={searchMedia}
           mediaType={mediaType}
