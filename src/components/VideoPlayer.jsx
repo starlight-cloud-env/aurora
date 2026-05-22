@@ -1,20 +1,20 @@
 function VideoPlayer({
-  modalData,
-  selectedItem,
-  currentShow,
-  currentSeason,
-  currentEpisode,
+  type,
+  movieId,
+  showId,
+  season,
+  episode,
 }) {
-  const isMovie = modalData?.type === 'movie'
+  const isMovie = type === 'movie'
 
   const src = isMovie
-    ? selectedItem?.id
-      ? `https://vsembed.su/embed/movie/${selectedItem.id}`
+    ? movieId
+      ? `https://vsembed.su/embed/movie/${movieId}`
       : null
-    : currentShow?.id &&
-      currentSeason?.season_number &&
-      currentEpisode?.episode_number
-      ? `https://vsembed.su/embed/tv/${currentShow.id}/${currentSeason.season_number}/${currentEpisode.episode_number}`
+    : showId &&
+      season &&
+      episode
+      ? `https://vsembed.su/embed/tv/${showId}/${season}/${episode}`
       : null
 
   if (!src) return null
