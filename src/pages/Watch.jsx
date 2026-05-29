@@ -6,21 +6,23 @@ import {
   getSeasonDetails,
   getPosterUrl,
   getBackdropUrl,
-} from '../api/tmdb.js'
-import { getMovieEmbedUrl, getTVEmbedUrl } from '../api/ezvidapi.js'
+} from '../api/tmdb'
+import { getMovieEmbedUrl, getTVEmbedUrl } from '../api/ezvidapi'
 import VideoPlayer from '../components/player/VideoPlayer.jsx'
 import EpisodeSelector from '../components/player/EpisodeSelector.jsx'
-import './Watch.css'
-
 import { useBookmarks } from '../hooks/useBookmarks'
 import { useWatchHistory } from '../hooks/useWatchHistory'
 import { useAuth } from '../context/AuthContext'
-
 import { SkeletonWatch } from '../components/ui/Skeleton'
+import './Watch.css'
 
 function Watch() {
   const { mediaType, id } = useParams()
   const isTV = mediaType === 'tv'
+
+  const { user } = useAuth()
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { addToHistory } = useWatchHistory()
 
   const [details, setDetails] = useState(null)
   const [selectedSeason, setSelectedSeason] = useState(1)
@@ -28,36 +30,35 @@ function Watch() {
   const [episodes, setEpisodes] = useState([])
   const [embedUrl, setEmbedUrl] = useState(null)
   const [loading, setLoading] = useState(true)
-
-  const { user } = useAuth()
-  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
-  const { addToHistory } = useWatchHistory()
+  const [error, setError] = useState(null)
 
   // Fetch movie or show details
   useEffect(() => {
+    if (!id || !mediaType) return
     const fetchDetails = async () => {
       try {
         setLoading(true)
+        setError(null)
         const data = isTV
           ? await getShowDetails(id)
           : await getMovieDetails(id)
         setDetails(data)
-
         if (!isTV) {
           setEmbedUrl(getMovieEmbedUrl(id))
         }
       } catch (err) {
         console.error('Failed to fetch details:', err)
+        setError('Failed to load content.')
       } finally {
         setLoading(false)
       }
     }
     fetchDetails()
-  }, [id, isTV])
+  }, [id, mediaType, isTV])
 
   // Fetch episodes when season changes
   useEffect(() => {
-    if (!isTV) return
+    if (!isTV || !id) return
     const fetchEpisodes = async () => {
       try {
         const data = await getSeasonDetails(id, selectedSeason)
@@ -73,9 +74,20 @@ function Watch() {
 
   // Update embed URL when episode changes
   useEffect(() => {
-    if (!isTV) return
+    if (!isTV || !id) return
     setEmbedUrl(getTVEmbedUrl(id, selectedSeason, selectedEpisode))
   }, [id, isTV, selectedSeason, selectedEpisode])
+
+  // Log watch history
+  useEffect(() => {
+    if (!user || !details || !id || !mediaType) return
+    addToHistory({
+      id,
+      mediaType,
+      title: details.title || details.name || '',
+      thumbnail: getPosterUrl(details.poster_path),
+    })
+  }, [user, details])
 
   if (loading) {
     return (
@@ -86,25 +98,24 @@ function Watch() {
       </div>
     )
   }
-  if (!details) return <div className="watch__error">Content not found.</div>
 
-  const title = details.title || details.name
-  const overview = details.overview
+  if (error || !details) {
+    return (
+      <div className="watch">
+        <div className="watch__error">{error || 'Content not found.'}</div>
+      </div>
+    )
+  }
+
+  const title = details.title || details.name || ''
+  const overview = details.overview || ''
   const poster = getPosterUrl(details.poster_path, 'w342')
   const backdrop = getBackdropUrl(details.backdrop_path)
-  const rating = details.vote_average?.toFixed(1)
-  const year = (details.release_date || details.first_air_date)?.slice(0, 4)
-  const seasons = details.seasons?.filter(s => s.season_number > 0) || []
-
-  useEffect(() => {
-    if (!user || !details) return
-    addToHistory({
-      id,
-      mediaType,
-      title: details.title || details.name,
-      thumbnail: getPosterUrl(details.poster_path),
-    })
-  }, [user, details])
+  const rating = details.vote_average ? details.vote_average.toFixed(1) : null
+  const year = (details.release_date || details.first_air_date || '').slice(0, 4)
+  const seasons = Array.isArray(details.seasons)
+    ? details.seasons.filter(s => s.season_number > 0)
+    : []
 
   return (
     <div className="watch">
@@ -130,18 +141,18 @@ function Watch() {
                 {year && <span className="watch__tag">{year}</span>}
                 <span className="watch__tag">{isTV ? 'TV Show' : 'Movie'}</span>
               </div>
-
               {user && (
                 <button
                   className={`watch__bookmark-btn ${isBookmarked(id) ? 'watch__bookmark-btn--active' : ''}`}
-                  onClick={() => isBookmarked(id)
-                    ? removeBookmark(id)
-                    : addBookmark({
-                        id,
-                        mediaType,
-                        title: details.title || details.name,
-                        thumbnail: getPosterUrl(details.poster_path),
-                      })
+                  onClick={() =>
+                    isBookmarked(id)
+                      ? removeBookmark(id)
+                      : addBookmark({
+                          id,
+                          mediaType,
+                          title,
+                          thumbnail: getPosterUrl(details.poster_path),
+                        })
                   }
                 >
                   {isBookmarked(id) ? '🔖 Bookmarked' : '+ Bookmark'}
