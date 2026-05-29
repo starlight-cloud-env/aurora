@@ -104,6 +104,7 @@ function Watch() {
                 </div>
               </div>
             )}
+          </div>
 
           <div className="watch__meta">
             {poster && (
