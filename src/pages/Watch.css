@@ -97,3 +97,29 @@
   font-size: var(--font-size-lg);
   color: var(--color-muted);
 }
+
+.watch__bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid rgba(107, 111, 176, 0.3);
+  transition: all var(--transition-fast);
+  margin-top: var(--space-sm);
+}
+
+.watch__bookmark-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.watch__bookmark-btn--active {
+  background-color: rgba(185, 184, 255, 0.1);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}

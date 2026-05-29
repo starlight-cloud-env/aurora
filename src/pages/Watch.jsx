@@ -12,6 +12,10 @@ import VideoPlayer from '../components/player/VideoPlayer.jsx'
 import EpisodeSelector from '../components/player/EpisodeSelector.jsx'
 import './Watch.css'
 
+import { useBookmarks } from '../hooks/useBookmarks'
+import { useWatchHistory } from '../hooks/useWatchHistory'
+import { useAuth } from '../context/AuthContext'
+
 function Watch() {
   const { mediaType, id } = useParams()
   const isTV = mediaType === 'tv'
@@ -22,6 +26,10 @@ function Watch() {
   const [episodes, setEpisodes] = useState([])
   const [embedUrl, setEmbedUrl] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const { user } = useAuth()
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { addToHistory } = useWatchHistory()
 
   // Fetch movie or show details
   useEffect(() => {
@@ -78,6 +86,16 @@ function Watch() {
   const year = (details.release_date || details.first_air_date)?.slice(0, 4)
   const seasons = details.seasons?.filter(s => s.season_number > 0) || []
 
+  useEffect(() => {
+    if (!user || !details) return
+    addToHistory({
+      id,
+      mediaType,
+      title: details.title || details.name,
+      thumbnail: getPosterUrl(details.poster_path),
+    })
+  }, [user, details])
+
   return (
     <div className="watch">
       {backdrop && (
@@ -102,6 +120,23 @@ function Watch() {
                 {year && <span className="watch__tag">{year}</span>}
                 <span className="watch__tag">{isTV ? 'TV Show' : 'Movie'}</span>
               </div>
+
+              {user && (
+                <button
+                  className={`watch__bookmark-btn ${isBookmarked(id) ? 'watch__bookmark-btn--active' : ''}`}
+                  onClick={() => isBookmarked(id)
+                    ? removeBookmark(id)
+                    : addBookmark({
+                        id,
+                        mediaType,
+                        title: details.title || details.name,
+                        thumbnail: getPosterUrl(details.poster_path),
+                      })
+                  }
+                >
+                  {isBookmarked(id) ? '🔖 Bookmarked' : '+ Bookmark'}
+                </button>
+              )}
               <p className="watch__overview">{overview}</p>
             </div>
           </div>
