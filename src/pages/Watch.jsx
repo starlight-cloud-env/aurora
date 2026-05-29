@@ -89,22 +89,7 @@ function Watch() {
 
       <div className="watch__content">
         <div className="watch__player-section">
-          <div className="watch__player-section">
-            {embedUrl && (
-              <div className="player">
-                <div className="player__wrapper">
-                  <iframe
-                    src={embedUrl}
-                    className="player__iframe"
-                    allowFullScreen
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    referrerPolicy="origin"
-                    title="Aurora Video Player"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+          <VideoPlayer embedUrl={embedUrl} />
 
           <div className="watch__meta">
             {poster && (
