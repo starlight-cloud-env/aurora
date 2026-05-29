@@ -3,13 +3,15 @@ import Layout from './components/layout/Layout'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Watch from './pages/Watch'
+import SignIn from './pages/SignIn'
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route element={<Layout><Home /></Layout>} path="/" />
-      <Route element={<Layout><Browse /></Layout>} path="/browse" />
-      <Route element={<Layout><Watch /></Layout>} path="/watch/:id" />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/" element={<Layout><Home /></Layout>} />
+      <Route path="/browse" element={<Layout><Browse /></Layout>} />
+      <Route path="/watch/:id" element={<Layout><Watch /></Layout>} />
     </Routes>
   )
 }
