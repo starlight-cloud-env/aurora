@@ -1,78 +1,120 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import {
+  getPopularMovies,
+  getTrendingMovies,
+  getPopularShows,
+  getTrendingShows,
+  getPosterUrl,
+  getBackdropUrl,
+} from '../api/tmdb'
 import HeroBanner from '../components/ui/HeroBanner'
 import ContentRow from '../components/ui/ContentRow'
 import './Home.css'
 
-// Placeholder data until APIs are wired in
-const PLACEHOLDER_MOVIES = Array.from({ length: 10 }, (_, i) => ({
-  id: `movie-${i + 1}`,
-  title: `Movie Title ${i + 1}`,
-  thumbnail: null,
-  rating: (7 + Math.random() * 2).toFixed(1),
-  year: 2023 + (i % 2),
-}))
-
-const PLACEHOLDER_SHOWS = Array.from({ length: 10 }, (_, i) => ({
-  id: `show-${i + 1}`,
-  title: `Show Title ${i + 1}`,
-  thumbnail: null,
-  rating: (7 + Math.random() * 2).toFixed(1),
-  year: 2023 + (i % 2),
-}))
-
-const HERO_PLACEHOLDER = {
-  title: 'Featured Title',
-  overview: 'An epic story that will keep you on the edge of your seat. Discover the latest and greatest in entertainment, all in one place on Aurora.',
-  backdrop: null,
-}
+const normalizeMovie = (item) => ({
+  id: item.id,
+  title: item.title || item.name,
+  thumbnail: getPosterUrl(item.poster_path),
+  backdrop: getBackdropUrl(item.backdrop_path),
+  rating: item.vote_average?.toFixed(1),
+  year: (item.release_date || item.first_air_date)?.slice(0, 4),
+  overview: item.overview,
+  mediaType: item.title ? 'movie' : 'tv',
+})
 
 function Home() {
   const { user } = useAuth()
   const navigate = useNavigate()
 
+  const [popularMovies, setPopularMovies] = useState([])
+  const [trendingMovies, setTrendingMovies] = useState([])
+  const [popularShows, setPopularShows] = useState([])
+  const [trendingShows, setTrendingShows] = useState([])
+  const [hero, setHero] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [popMovies, trendMovies, popShows, trendShows] = await Promise.all([
+          getPopularMovies(),
+          getTrendingMovies(),
+          getPopularShows(),
+          getTrendingShows(),
+        ])
+
+        const normalizedPopMovies = popMovies.results.map(normalizeMovie)
+        const normalizedTrendMovies = trendMovies.results.map(normalizeMovie)
+        const normalizedPopShows = popShows.results.map(normalizeMovie)
+        const normalizedTrendShows = trendShows.results.map(normalizeMovie)
+
+        setPopularMovies(normalizedPopMovies)
+        setTrendingMovies(normalizedTrendMovies)
+        setPopularShows(normalizedPopShows)
+        setTrendingShows(normalizedTrendShows)
+
+        // Use first trending movie as hero
+        if (normalizedTrendMovies[0]) setHero(normalizedTrendMovies[0])
+      } catch (err) {
+        console.error('Failed to fetch content:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAll()
+  }, [])
+
   const handleCardClick = (item) => {
-    navigate(`/watch/${item.id}`)
+    navigate(`/watch/${item.mediaType}/${item.id}`)
+  }
+
+  if (loading) {
+    return <div className="home__loading">Loading...</div>
   }
 
   return (
     <div className="home">
-      <HeroBanner
-        title={HERO_PLACEHOLDER.title}
-        overview={HERO_PLACEHOLDER.overview}
-        backdrop={HERO_PLACEHOLDER.backdrop}
-        onPlay={() => navigate('/watch/featured')}
-      />
+      {hero && (
+        <HeroBanner
+          title={hero.title}
+          overview={hero.overview}
+          backdrop={hero.backdrop}
+          onPlay={() => navigate(`/watch/${hero.mediaType}/${hero.id}`)}
+        />
+      )}
 
       {user && (
         <ContentRow
           title="Continue Watching"
-          items={PLACEHOLDER_MOVIES.slice(0, 5)}
+          items={[]}
           onCardClick={handleCardClick}
         />
       )}
 
       <ContentRow
         title="Popular Movies"
-        items={PLACEHOLDER_MOVIES}
+        items={popularMovies}
         onCardClick={handleCardClick}
       />
 
       <ContentRow
         title="Trending Movies"
-        items={[...PLACEHOLDER_MOVIES].reverse()}
+        items={trendingMovies}
         onCardClick={handleCardClick}
       />
 
       <ContentRow
         title="Popular Shows"
-        items={PLACEHOLDER_SHOWS}
+        items={popularShows}
         onCardClick={handleCardClick}
       />
 
       <ContentRow
         title="Trending Shows"
-        items={[...PLACEHOLDER_SHOWS].reverse()}
+        items={trendingShows}
         onCardClick={handleCardClick}
       />
     </div>

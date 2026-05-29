@@ -11,7 +11,7 @@ function AppRoutes() {
       <Route path="/signin" element={<SignIn />} />
       <Route path="/" element={<Layout><Home /></Layout>} />
       <Route path="/browse" element={<Layout><Browse /></Layout>} />
-      <Route path="/watch/:id" element={<Layout><Watch /></Layout>} />
+      <Route path="/watch/:mediaType/:id" element={<Layout><Watch /></Layout>} />
     </Routes>
   )
 }
