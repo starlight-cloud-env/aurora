@@ -1,0 +1,117 @@
+@keyframes skeletonPulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    rgba(107, 111, 176, 0.2) 50%,
+    var(--color-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear, skeletonPulse 2s infinite ease;
+  border-radius: var(--radius-md);
+}
+
+/* Hero */
+.skeleton-hero {
+  width: 100%;
+  height: 520px;
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+/* Card */
+.skeleton-card {
+  flex: 0 0 160px;
+}
+
+.skeleton-card__thumb {
+  width: 160px;
+  height: 240px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.skeleton-card__title {
+  height: 14px;
+  width: 80%;
+  margin-bottom: var(--space-xs);
+}
+
+.skeleton-card__year {
+  height: 12px;
+  width: 40%;
+}
+
+/* Row */
+.skeleton-row {
+  margin-bottom: var(--space-2xl);
+}
+
+.skeleton-row__title {
+  height: 20px;
+  width: 180px;
+  margin-bottom: var(--space-md);
+}
+
+.skeleton-row__scroll {
+  display: flex;
+  gap: var(--space-md);
+  overflow: hidden;
+  padding-bottom: var(--space-md);
+}
+
+/* Watch */
+.skeleton-watch__player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.skeleton-watch__meta {
+  display: flex;
+  gap: var(--space-lg);
+  background-color: rgba(42, 47, 90, 0.3);
+  border: 1px solid rgba(107, 111, 176, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.skeleton-watch__poster {
+  flex: 0 0 90px;
+  width: 90px;
+  height: 130px;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-watch__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.skeleton-watch__title {
+  height: 24px;
+  width: 60%;
+}
+
+.skeleton-watch__tags {
+  height: 20px;
+  width: 40%;
+}
+
+.skeleton-watch__line {
+  height: 14px;
+  width: 100%;
+}
+
+.skeleton-watch__line--short {
+  width: 70%;
+}

@@ -1,0 +1,14 @@
+.home {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.home__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  font-size: var(--font-size-lg);
+  color: var(--color-muted);
+  animation: fadeIn 0.4s ease;
+}
