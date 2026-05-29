@@ -8,7 +8,7 @@ import {
   getBackdropUrl,
 } from '../api/tmdb'
 import { getMovieEmbedUrl, getTVEmbedUrl } from '../api/ezvidapi'
-import VideoPlayer from '../components/player/VideoPlayer'
+
 import EpisodeSelector from '../components/player/EpisodeSelector'
 import './Watch.css'
 
@@ -89,7 +89,21 @@ function Watch() {
 
       <div className="watch__content">
         <div className="watch__player-section">
-          <VideoPlayer embedUrl={embedUrl} />
+          <div className="watch__player-section">
+            {embedUrl && (
+              <div className="player">
+                <div className="player__wrapper">
+                  <iframe
+                    src={embedUrl}
+                    className="player__iframe"
+                    allowFullScreen
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    referrerPolicy="origin"
+                    title="Aurora Video Player"
+                  />
+                </div>
+              </div>
+            )}
 
           <div className="watch__meta">
             {poster && (
