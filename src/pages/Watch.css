@@ -1,6 +1,7 @@
 .watch {
   position: relative;
   min-height: 100vh;
+  animation: fadeIn 0.4s ease forwards;
 }
 
 .watch__backdrop {
@@ -8,9 +9,10 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.08;
+  opacity: 0.06;
   z-index: 0;
   pointer-events: none;
+  filter: blur(2px);
 }
 
 .watch__content {
@@ -32,13 +34,19 @@
   display: flex;
   gap: var(--space-lg);
   margin-top: var(--space-lg);
+  background-color: rgba(42, 47, 90, 0.3);
+  border: 1px solid rgba(107, 111, 176, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  backdrop-filter: blur(8px);
 }
 
 .watch__poster {
-  flex: 0 0 100px;
-  width: 100px;
+  flex: 0 0 90px;
+  width: 90px;
   border-radius: var(--radius-md);
   object-fit: cover;
+  box-shadow: var(--shadow-md);
 }
 
 .watch__info {
@@ -49,7 +57,7 @@
 
 .watch__title {
   font-size: var(--font-size-xl);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.2;
 }
@@ -61,29 +69,63 @@
 }
 
 .watch__tag {
-  background-color: var(--color-surface);
+  background-color: rgba(42, 47, 90, 0.8);
   color: var(--color-accent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 10px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(185, 184, 255, 0.2);
+  border: 1px solid rgba(185, 184, 255, 0.15);
 }
 
 .watch__overview {
   font-size: var(--font-size-sm);
   color: var(--color-muted);
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.watch__bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background-color: rgba(42, 47, 90, 0.6);
+  color: var(--color-text);
+  border: 1px solid rgba(107, 111, 176, 0.25);
+  transition: all var(--transition-base);
+  margin-top: var(--space-sm);
+  width: fit-content;
+}
+
+.watch__bookmark-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.watch__bookmark-btn--active {
+  background-color: rgba(185, 184, 255, 0.1);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .watch__episodes-section {
   position: sticky;
   top: 80px;
+  background-color: rgba(42, 47, 90, 0.2);
+  border: 1px solid rgba(107, 111, 176, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  backdrop-filter: blur(8px);
 }
 
 .watch__episodes-title {
   font-size: var(--font-size-lg);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   margin-bottom: var(--space-md);
 }
@@ -96,30 +138,4 @@
   height: 60vh;
   font-size: var(--font-size-lg);
   color: var(--color-muted);
-}
-
-.watch__bookmark-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  border: 1px solid rgba(107, 111, 176, 0.3);
-  transition: all var(--transition-fast);
-  margin-top: var(--space-sm);
-}
-
-.watch__bookmark-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.watch__bookmark-btn--active {
-  background-color: rgba(185, 184, 255, 0.1);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
 }

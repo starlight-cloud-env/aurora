@@ -1,7 +1,9 @@
 .navbar {
   height: 64px;
-  background-color: var(--color-bg);
-  border-bottom: 1px solid rgba(107, 111, 176, 0.2);
+  background-color: rgba(14, 15, 24, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(107, 111, 176, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,24 +19,25 @@
 }
 
 .navbar__search-input {
-  background-color: var(--color-surface);
-  border: 1px solid rgba(107, 111, 176, 0.3);
+  background-color: rgba(42, 47, 90, 0.6);
+  border: 1px solid rgba(107, 111, 176, 0.2);
   border-radius: var(--radius-full);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--font-size-sm);
   padding: var(--space-sm) var(--space-lg);
-  width: 260px;
+  width: 280px;
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
-.navbar__search-input::placeholder {
-  color: var(--color-muted);
-}
+.navbar__search-input::placeholder { color: var(--color-muted); }
 
 .navbar__search-input:focus {
   border-color: var(--color-accent);
+  background-color: rgba(42, 47, 90, 0.9);
+  box-shadow: var(--shadow-glow);
+  width: 320px;
 }
 
 .navbar__actions {
@@ -45,31 +48,42 @@
 
 .navbar__icon-btn {
   font-size: var(--font-size-lg);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
+  line-height: 1;
 }
 
 .navbar__icon-btn:hover {
   background-color: rgba(107, 111, 176, 0.15);
+  transform: scale(1.1);
 }
 
 .navbar__btn {
-  background-color: var(--color-accent);
+  background: var(--gradient-accent);
   color: var(--color-bg);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-sm);
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-full);
-  transition: opacity var(--transition-fast);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-glow);
 }
 
 .navbar__btn:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+  box-shadow: var(--shadow-glow-strong);
+  transform: translateY(-1px);
 }
 
 .navbar__btn--outline {
-  background-color: transparent;
+  background: transparent;
   color: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  border: 1px solid rgba(185, 184, 255, 0.4);
+  box-shadow: none;
+}
+
+.navbar__btn--outline:hover {
+  background-color: rgba(185, 184, 255, 0.08);
+  box-shadow: var(--shadow-glow);
 }
