@@ -1,13 +1,18 @@
 const BASE_URL = 'https://api.themoviedb.org/3'
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
+const ACCESS_TOKEN = import.meta.env.VITE_TMDB_API_KEY
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 
 const get = async (endpoint, params = {}) => {
   const url = new URL(`${BASE_URL}${endpoint}`)
-  url.searchParams.set('api_key', API_KEY)
   Object.entries(params).forEach(([key, val]) => url.searchParams.set(key, val))
 
-  const res = await fetch(url)
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    }
+  })
+
   if (!res.ok) throw new Error(`TMDB error: ${res.status}`)
   return res.json()
 }
