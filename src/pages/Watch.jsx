@@ -16,6 +16,8 @@ import { useBookmarks } from '../hooks/useBookmarks'
 import { useWatchHistory } from '../hooks/useWatchHistory'
 import { useAuth } from '../context/AuthContext'
 
+import { SkeletonWatch } from '../components/ui/Skeleton'
+
 function Watch() {
   const { mediaType, id } = useParams()
   const isTV = mediaType === 'tv'
@@ -75,7 +77,15 @@ function Watch() {
     setEmbedUrl(getTVEmbedUrl(id, selectedSeason, selectedEpisode))
   }, [id, isTV, selectedSeason, selectedEpisode])
 
-  if (loading) return <div className="watch__loading">Loading...</div>
+  if (loading) {
+    return (
+      <div className="watch">
+        <div className="watch__content">
+          <SkeletonWatch />
+        </div>
+      </div>
+    )
+  }
   if (!details) return <div className="watch__error">Content not found.</div>
 
   const title = details.title || details.name

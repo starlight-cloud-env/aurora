@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { searchMulti, getPopularMovies, getPopularShows, getPosterUrl } from '../api/tmdb'
 import ContentCard from '../components/ui/ContentCard'
 import './Browse.css'
+import { SkeletonCard } from '../components/ui/Skeleton'
 
 const normalizeResult = (item) => ({
   id: item.id,
@@ -97,7 +98,11 @@ function Browse() {
       </div>
 
       {loading ? (
-        <div className="browse__loading">Loading...</div>
+        <div className="browse__grid">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
       ) : filteredItems.length === 0 ? (
         <div className="browse__empty">
           {query ? `No results found for "${query}"` : 'Nothing to show.'}

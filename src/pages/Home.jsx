@@ -12,6 +12,7 @@ import {
 import HeroBanner from '../components/ui/HeroBanner'
 import ContentRow from '../components/ui/ContentRow'
 import './Home.css'
+import { SkeletonHero, SkeletonRow } from '../components/ui/Skeleton'
 
 const normalizeMovie = (item) => ({
   id: item.id,
@@ -72,7 +73,15 @@ function Home() {
   }
 
   if (loading) {
-    return <div className="home__loading">Loading...</div>
+    return (
+      <div className="home">
+        <SkeletonHero />
+        <SkeletonRow />
+        <SkeletonRow />
+        <SkeletonRow />
+        <SkeletonRow />
+      </div>
+    )
   }
 
   return (
