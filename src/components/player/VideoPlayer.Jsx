@@ -10,7 +10,6 @@ function VideoPlayer({ embedUrl }) {
                 <div className="player__wrapper">
                     <iframe
                         src={embedUrl}
-                        className="player__iframe"
                         allowFullScreen
                         allow="autoplay; fullscreen; picture-in-picture"
                         referrerPolicy="origin"
