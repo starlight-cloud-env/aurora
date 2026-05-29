@@ -80,3 +80,44 @@ function Browse() {
   return (
     <div className="browse">
       <div className="browse__header">
+        <h1 className="browse__title">
+          {query ? `Results for "${query}"` : 'Browse'}
+        </h1>
+        <div className="browse__filters">
+          {['all', 'movie', 'tv'].map((filter) => (
+            <button
+              key={filter}
+              className={`browse__filter-btn ${activeFilter === filter ? 'browse__filter-btn--active' : ''}`}
+              onClick={() => setActiveFilter(filter)}
+            >
+              {filter === 'all' ? 'All' : filter === 'movie' ? 'Movies' : 'TV Shows'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="browse__loading">Loading...</div>
+      ) : filteredItems.length === 0 ? (
+        <div className="browse__empty">
+          {query ? `No results found for "${query}"` : 'Nothing to show.'}
+        </div>
+      ) : (
+        <div className="browse__grid">
+          {filteredItems.map((item) => (
+            <ContentCard
+              key={`${item.mediaType}-${item.id}`}
+              title={item.title}
+              thumbnail={item.thumbnail}
+              rating={item.rating}
+              year={item.year}
+              onClick={() => handleCardClick(item)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default Browse
