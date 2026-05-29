@@ -8,8 +8,8 @@ import {
   getBackdropUrl,
 } from '../api/tmdb'
 import { getMovieEmbedUrl, getTVEmbedUrl } from '../api/ezvidapi'
-import VideoPlayer from '../components/player/VideoPlayer'
-import EpisodeSelector from '../components/player/EpisodeSelector'
+import VideoPlayer from '../components/player/VideoPlayer.jsx'
+import EpisodeSelector from '../components/player/EpisodeSelector.jsx'
 import './Watch.css'
 
 function Watch() {
