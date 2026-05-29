@@ -1,0 +1,99 @@
+.watch {
+  position: relative;
+  min-height: 100vh;
+}
+
+.watch__backdrop {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watch__content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.watch__player-section {
+  min-width: 0;
+}
+
+.watch__meta {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.watch__poster {
+  flex: 0 0 100px;
+  width: 100px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+.watch__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.watch__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.watch__tags {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.watch__tag {
+  background-color: var(--color-surface);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(185, 184, 255, 0.2);
+}
+
+.watch__overview {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.watch__episodes-section {
+  position: sticky;
+  top: 80px;
+}
+
+.watch__episodes-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.watch__loading,
+.watch__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  font-size: var(--font-size-lg);
+  color: var(--color-muted);
+}
