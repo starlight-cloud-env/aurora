@@ -11,7 +11,6 @@ function VideoPlayer({ embedUrl }) {
           className="player__iframe"
           allowFullScreen
           allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-          scrolling="no"
           title="Aurora Video Player"
         />
       </div>
