@@ -1,20 +1,27 @@
-import { BrowserRouter } from 'react-router-dom'
 import { useEffect } from 'react'
+import { BrowserRouter, useNavigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import AppRoutes from './routes.jsx'
 
-function App() {
+function AuthHandler() {
+  const navigate = useNavigate()
+
   useEffect(() => {
-    // Handle magic link redirect
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        window.location.href = '/'
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') {
+        navigate('/', { replace: true })
       }
     })
+    return () => subscription.unsubscribe()
   }, [])
 
+  return null
+}
+
+function App() {
   return (
     <BrowserRouter>
+      <AuthHandler />
       <AppRoutes />
     </BrowserRouter>
   )
