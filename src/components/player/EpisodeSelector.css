@@ -133,3 +133,33 @@
   color: var(--color-accent);
   font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  .episode-selector__seasons {
+    gap: var(--space-xs);
+  }
+
+  .episode-selector__season-btn {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+
+  .episode-selector__episode {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .episode-selector__episode-thumb {
+    flex: none;
+    width: 100%;
+    height: 160px;
+  }
+
+  .episode-selector__episode-info {
+    padding: 0 var(--space-xs);
+  }
+
+  .episode-selector__episodes {
+    max-height: none;
+  }
+}
