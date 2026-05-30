@@ -19,3 +19,15 @@
   height: 100%;
   border: none;
 }
+
+@media (max-width: 768px) {
+  .player {
+    margin-left: calc(-1 * var(--space-md));
+    margin-right: calc(-1 * var(--space-md));
+    margin-bottom: var(--space-md);
+  }
+
+  .player__wrapper {
+    border-radius: 0;
+  }
+}
