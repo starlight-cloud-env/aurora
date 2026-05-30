@@ -20,6 +20,7 @@
   border: none;
 }
 
+/*
 @media (max-width: 768px) {
   .player {
     margin-left: calc(-1 * var(--space-md));
@@ -31,3 +32,4 @@
     border-radius: 0;
   }
 }
+*/
