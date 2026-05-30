@@ -1,5 +1,6 @@
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
+import BottomNav from './BottomNav'
 import './Layout.css'
 
 function Layout({ children }) {
@@ -12,6 +13,7 @@ function Layout({ children }) {
           {children}
         </main>
       </div>
+      <BottomNav />
     </div>
   )
 }

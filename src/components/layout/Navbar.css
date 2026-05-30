@@ -87,3 +87,17 @@
   background-color: rgba(185, 184, 255, 0.08);
   box-shadow: var(--shadow-glow);
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+
+  .navbar__search-input {
+    width: 180px;
+  }
+
+  .navbar__search-input:focus {
+    width: 200px;
+  }
+}
