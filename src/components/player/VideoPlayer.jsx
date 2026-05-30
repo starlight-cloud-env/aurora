@@ -9,7 +9,7 @@ function VideoPlayer({ embedUrl }) {
           className="player__iframe"
           allowFullScreen
           allow="autoplay; fullscreen; picture-in-picture"
-          referrerPolicy="origin"
+          referrerPolicy="no-referrer"
           title="Aurora Video Player"
         />
       </div>
