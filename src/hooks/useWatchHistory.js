@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -7,20 +7,14 @@ export function useWatchHistory() {
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (!user) {
-      setHistory([])
-      return
-    }
-    fetchHistory()
-  }, [user])
-
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
+    if (!user) return
     setLoading(true)
     try {
       const { data, error } = await supabase
         .from('watch_history')
         .select('*')
+        .eq('user_id', user.id)
         .order('watched_at', { ascending: false })
         .limit(50)
 
@@ -31,33 +25,61 @@ export function useWatchHistory() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
-  const addToHistory = async (item, progressSeconds = 0) => {
+  useEffect(() => {
+    if (!user) {
+      setHistory([])
+      return
+    }
+    fetchHistory()
+  }, [user, fetchHistory])
+
+  const addToHistory = useCallback(async (item, progressSeconds = 0) => {
     if (!user) return
     try {
-      // Upsert so watching the same content updates rather than duplicates
-      const { error } = await supabase
+      // Check if entry already exists
+      const { data: existing } = await supabase
         .from('watch_history')
-        .upsert({
-          user_id: user.id,
-          content_id: String(item.id),
-          content_type: item.mediaType,
-          title: item.title,
-          thumbnail_url: item.thumbnail,
-          progress_seconds: progressSeconds,
-          watched_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id, content_id',
-        })
-      if (error) throw error
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('content_id', String(item.id))
+        .single()
+
+      if (existing) {
+        // Update existing entry
+        const { error } = await supabase
+          .from('watch_history')
+          .update({
+            progress_seconds: progressSeconds,
+            watched_at: new Date().toISOString(),
+            title: item.title,
+            thumbnail_url: item.thumbnail,
+          })
+          .eq('id', existing.id)
+        if (error) throw error
+      } else {
+        // Insert new entry
+        const { error } = await supabase
+          .from('watch_history')
+          .insert({
+            user_id: user.id,
+            content_id: String(item.id),
+            content_type: item.mediaType,
+            title: item.title,
+            thumbnail_url: item.thumbnail,
+            progress_seconds: progressSeconds,
+            watched_at: new Date().toISOString(),
+          })
+        if (error) throw error
+      }
       await fetchHistory()
     } catch (err) {
       console.error('Failed to add to history:', err)
     }
-  }
+  }, [user, fetchHistory])
 
-  const clearHistory = async () => {
+  const clearHistory = useCallback(async () => {
     if (!user) return
     try {
       const { error } = await supabase
@@ -69,7 +91,7 @@ export function useWatchHistory() {
     } catch (err) {
       console.error('Failed to clear history:', err)
     }
-  }
+  }, [user])
 
   return { history, loading, addToHistory, clearHistory }
 }

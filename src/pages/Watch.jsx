@@ -16,6 +16,9 @@ import { useAuth } from '../context/AuthContext'
 import { SkeletonWatch } from '../components/ui/Skeleton'
 import './Watch.css'
 
+import { useSubtitles } from '../hooks/useSubtitles'
+import SubtitleSelector from '../components/player/SubtitleSelector.jsx'
+
 function Watch() {
   const { mediaType, id } = useParams()
   const isTV = mediaType === 'tv'
@@ -117,6 +120,24 @@ function Watch() {
     ? details.seasons.filter(s => s.season_number > 0)
     : []
 
+
+  const {
+    subtitles,
+    selectedLanguage,
+    setSelectedLanguage,
+    selectedSubtitle,
+    selectSubtitle,
+    subtitleUrl,
+    loading: subtitlesLoading,
+    error: subtitlesError,
+    languages,
+  } = useSubtitles({
+    tmdbId: id,
+    mediaType,
+    season: selectedSeason,
+    episode: selectedEpisode,
+  })
+
   return (
     <div className="watch">
       {backdrop && (
@@ -129,6 +150,18 @@ function Watch() {
       <div className="watch__content">
         <div className="watch__player-section">
           <VideoPlayer embedUrl={embedUrl} />
+
+          <SubtitleSelector
+            subtitles={subtitles}
+            selectedSubtitle={selectedSubtitle}
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={setSelectedLanguage}
+            onSubtitleSelect={selectSubtitle}
+            subtitleUrl={subtitleUrl}
+            loading={subtitlesLoading}
+            error={subtitlesError}
+            languages={languages}
+          />
 
           <div className="watch__meta">
             {poster && (
