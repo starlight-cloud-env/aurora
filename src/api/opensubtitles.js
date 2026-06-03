@@ -5,11 +5,15 @@ const get = async (endpoint, params = {}) => {
   const url = new URL(`${BASE_URL}${endpoint}`)
   Object.entries(params).forEach(([key, val]) => url.searchParams.set(key, val))
 
-  const res = await fetch(url, {
+  const res = await fetch(url.toString(), {
+    method: 'GET',
     headers: {
       'Api-Key': API_KEY,
       'Content-Type': 'application/json',
-    }
+      'Accept': 'application/json',
+    },
+    mode: 'cors',
+    credentials: 'omit',
   })
 
   if (!res.ok) throw new Error(`OpenSubtitles error: ${res.status}`)
@@ -38,7 +42,10 @@ export const getSubtitleDownloadUrl = async (fileId) => {
     headers: {
       'Api-Key': API_KEY,
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
     },
+    mode: 'cors',
+    credentials: 'omit',
     body: JSON.stringify({ file_id: fileId }),
   })
 
