@@ -27,6 +27,23 @@ function Watch() {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { addToHistory } = useWatchHistory()
 
+  const {
+    subtitles,
+    selectedLanguage,
+    setSelectedLanguage,
+    selectedSubtitle,
+    selectSubtitle,
+    subtitleUrl,
+    loading: subtitlesLoading,
+    error: subtitlesError,
+    languages,
+  } = useSubtitles({
+    tmdbId: id,
+    mediaType,
+    season: selectedSeason,
+    episode: selectedEpisode,
+  })
+
   const [details, setDetails] = useState(null)
   const [selectedSeason, setSelectedSeason] = useState(1)
   const [selectedEpisode, setSelectedEpisode] = useState(1)
@@ -119,24 +136,6 @@ function Watch() {
   const seasons = Array.isArray(details.seasons)
     ? details.seasons.filter(s => s.season_number > 0)
     : []
-
-
-  const {
-    subtitles,
-    selectedLanguage,
-    setSelectedLanguage,
-    selectedSubtitle,
-    selectSubtitle,
-    subtitleUrl,
-    loading: subtitlesLoading,
-    error: subtitlesError,
-    languages,
-  } = useSubtitles({
-    tmdbId: id,
-    mediaType,
-    season: selectedSeason,
-    episode: selectedEpisode,
-  })
 
   return (
     <div className="watch">
