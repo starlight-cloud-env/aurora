@@ -27,23 +27,6 @@ function Watch() {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { addToHistory } = useWatchHistory()
 
-  const {
-    subtitles,
-    selectedLanguage,
-    setSelectedLanguage,
-    selectedSubtitle,
-    selectSubtitle,
-    subtitleUrl,
-    loading: subtitlesLoading,
-    error: subtitlesError,
-    languages,
-  } = useSubtitles({
-    tmdbId: id,
-    mediaType,
-    season: selectedSeason,
-    episode: selectedEpisode,
-  })
-
   const [details, setDetails] = useState(null)
   const [selectedSeason, setSelectedSeason] = useState(1)
   const [selectedEpisode, setSelectedEpisode] = useState(1)
@@ -51,6 +34,23 @@ function Watch() {
   const [embedUrl, setEmbedUrl] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const {
+      subtitles,
+      selectedLanguage,
+      setSelectedLanguage,
+      selectedSubtitle,
+      selectSubtitle,
+      subtitleUrl,
+      loading: subtitlesLoading,
+      error: subtitlesError,
+      languages,
+    } = useSubtitles({
+      tmdbId: id,
+      mediaType,
+      season: selectedSeason,
+      episode: selectedEpisode,
+    })
 
   // Fetch movie or show details
   useEffect(() => {
