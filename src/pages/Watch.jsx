@@ -57,6 +57,21 @@ function Watch() {
       episode: selectedEpisode,
     })
 
+  // Check ezvidapi health on load
+  useEffect(() => {
+    const checkEzvidapi = async () => {
+      const healthy = await checkHealth()
+      if (!healthy) {
+        addToast({
+          message: 'The video provider may be experiencing issues. Playback could be affected.',
+          type: 'warning',
+          duration: 8000,
+        })
+      }
+    }
+    checkEzvidapi()
+  }, [id])  
+
   // Fetch movie or show details
   useEffect(() => {
     if (!id || !mediaType) return
@@ -131,21 +146,6 @@ function Watch() {
       </div>
     )
   }
-
-  // Check ezvidapi health on load
-  useEffect(() => {
-    const checkEzvidapi = async () => {
-      const healthy = await checkHealth()
-      if (!healthy) {
-        addToast({
-          message: 'The video provider may be experiencing issues. Playback could be affected.',
-          type: 'warning',
-          duration: 8000,
-        })
-      }
-    }
-    checkEzvidapi()
-  }, [id])
 
   const title = details.title || details.name || ''
   const overview = details.overview || ''
