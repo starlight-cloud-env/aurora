@@ -15,6 +15,19 @@ export const getProviders = async () => {
   return res.json()
 }
 
+// Health check — uses the providers list endpoint as a lightweight ping
+export const checkHealth = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/list`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000),
+    })
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
 // Direct stream URLs by provider
 export const getMovieStreamUrl = (provider, tmdbId) =>
   `${BASE_URL}/movie/${provider}/${tmdbId}`

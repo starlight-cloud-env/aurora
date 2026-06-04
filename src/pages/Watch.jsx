@@ -19,6 +19,9 @@ import './Watch.css'
 import { useSubtitles } from '../hooks/useSubtitles'
 import SubtitleSelector from '../components/player/SubtitleSelector.jsx'
 
+import { checkHealth } from '../api/ezvidapi'
+import { useToast } from '../context/ToastContext'
+
 function Watch() {
   const { mediaType, id } = useParams()
   const isTV = mediaType === 'tv'
@@ -34,6 +37,8 @@ function Watch() {
   const [embedUrl, setEmbedUrl] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const { addToast } = useToast()
 
   const {
       subtitles,
@@ -126,6 +131,21 @@ function Watch() {
       </div>
     )
   }
+
+  // Check ezvidapi health on load
+  useEffect(() => {
+    const checkEzvidapi = async () => {
+      const healthy = await checkHealth()
+      if (!healthy) {
+        addToast({
+          message: 'The video provider may be experiencing issues. Playback could be affected.',
+          type: 'warning',
+          duration: 8000,
+        })
+      }
+    }
+    checkEzvidapi()
+  }, [id])
 
   const title = details.title || details.name || ''
   const overview = details.overview || ''
